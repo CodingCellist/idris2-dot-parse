@@ -1,0 +1,8 @@
+// from: https://github.com/ReneNyffenegger/about-Graphviz/blob/master/examples/multiple-edges.dot
+
+digraph D {
+
+  A -> {B, C, D} -> {F}
+
+}
+

@@ -20,4 +20,5 @@ install: $(TRGT)
 
 clean:
 	$(RM) -r build
+	$(RM) -r $(SRC_DIR)/build
 

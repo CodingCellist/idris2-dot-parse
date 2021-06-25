@@ -3,6 +3,10 @@
 An Idris2 lexer and parser for
 [the DOT language](https://graphviz.org/doc/info/lang.html).
 
+# TODO-list
+
+[ ] HTML-strings as valid IDs (involves lexing+parsing HTML...)
+
 # LICENSE
 
 This work is licensed under the BSD-3-Clause license.

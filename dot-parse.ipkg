@@ -18,11 +18,11 @@ modules = Graphics.DOT.Lexer
         , Graphics.DOT
 
 -- main file (i.e. file to load at REPL)
--- main =
+main = Graphics.DOT
 
 -- name of executable
 -- executable =
--- opts =
+opts = "-p contrib"
 sourcedir = "src"
 -- builddir =
 -- outputdir =
