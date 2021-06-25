@@ -5,7 +5,7 @@ An Idris2 lexer and parser for
 
 # TODO-list
 
-[ ] HTML-strings as valid IDs (involves lexing+parsing HTML...)
+- [ ] HTML-strings as valid IDs (involves lexing+parsing HTML...)
 
 # LICENSE
 
