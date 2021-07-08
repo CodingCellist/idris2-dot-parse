@@ -14,6 +14,8 @@ data DOTToken : Type where
   DiGEdgeOp : DOTToken
   ||| An edge operation in a graph
   GrEdgeOp : DOTToken
+  ||| A compass point (used in combination with ports)
+  CompassPt : (pt : String) -> DOTToken
   ||| A comment
   Comment : (contents : String) -> DOTToken
   ||| A multiline indicator
@@ -45,6 +47,7 @@ Show DOTToken where
   show (ID id_) = "(ID " ++ id_ ++ ")"
   show DiGEdgeOp = "DiEO"
   show GrEdgeOp = "GrEO"
+  show (CompassPt pt) = "(CPt " ++ pt ++ ")"
   show (Comment contents) = "(COM " ++ contents ++ ")"
   show MultilineBackslash = "MLB"
   show StrConcat = "STR++"
@@ -162,6 +165,56 @@ graphEdgeOp : Lexer
 graphEdgeOp = exact "--"
 
 
+-- Compass Points --
+
+northCPt : Lexer
+northCPt =        is 'n'
+
+northEastCPt : Lexer
+northEastCPt = exact "ne"
+
+eastCPt : Lexer
+eastCPt =         is 'e'
+
+southEastCPt : Lexer
+southEastCPt = exact "se"
+
+southCPt : Lexer
+southCPt =        is 'e'
+
+southWestCPt : Lexer
+southWestCPt = exact "sw"
+
+westCPt : Lexer
+westCPt =         is 'w'
+
+northWestCPt : Lexer
+northWestCPt = exact "nw"
+
+centerCPt : Lexer
+centerCPt =       is 'c'
+
+-- The compass point "_" specifies that an appropriate side of the port adjacent
+-- to the exterioior of the node should be used, if such exists. Otherwise, the
+-- center is used. If no compass point is used with a portname, the default
+-- value is "_".
+underCPt : Lexer
+underCPt =        is '_'
+
+-- (n | ne | e | se | s | sw | w | nw | c | _)
+compassPt : Lexer
+compassPt = northCPt
+         <|> northEastCPt
+         <|> eastCPt
+         <|> southEastCPt
+         <|> southCPt
+         <|> southWestCPt
+         <|> westCPt
+         <|> northWestCPt
+         <|> centerCPt
+         <|> underCPt
+
+
 -- Comments --
 
 -- "a line beginning with a '#' character is considered a line output from a C
@@ -228,12 +281,13 @@ equal = is '='
 -- TOKEN MAP --
 ---------------
 
-||| A mapping from the @Lexer@s to a function of type String -> DOTToken
+||| A mapping from the @Lexer@s to a function of type String -> @DOTToken@
 dotTokenMap : TokenMap DOTToken
 dotTokenMap = [ (keyword,             \str => Keyword str)
               , (id_,                 \str => ID str)
               , (digraphEdgeOp,       const DiGEdgeOp)
               , (graphEdgeOp,         const GrEdgeOp)
+              , (compassPt,           \pt  => CompassPt pt)
               , (comment,             \str => Comment str)
               , (multilineBackslash,  const MultilineBackslash)
               , (strConcat,           const StrConcat)
