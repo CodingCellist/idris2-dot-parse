@@ -30,6 +30,9 @@ data DOT : Type where
   StringID : (str : String) -> DOT
   HTML_ID : (html : String) -> DOT
 
+  -- a_list AST node, takes list of stuff
+  AList : List DOT -> DOT   -- non-empty?
+
   -- Operators
   -- TODO: split things into separate types to limit what can go where?
   Assign : Vect 2 DOT -> DOT

@@ -92,15 +92,16 @@ assign_ = do idLHS <- identifier
 sepChoice : Grammar DOTToken False ()
 sepChoice = ignore $ optional (choose semicolon comma)
 
-||| An a_list is an assignment, optionally followed by a separator, 
+||| An 'a_list' is an assignment, optionally followed by a separator, optionally
+||| followed by more of an 'a_list'.
 a_list : Grammar DOTToken True DOT
 a_list = (do head <- assign_
              sepChoice
-             ?a_list_ast1)    -- TODO: a_list AST node, takes list of stuff
+             pure (AList [head]))
       <|> (do head <- assign_
               sepChoice
               rest <- a_list
-              ?a_list_ast2)
+              pure (AList (head :: [rest])))
 
 ||| Keywords ('node', 'edge', 'graph', 'digraph', 'subgraph', 'strict').
 keyword : Grammar DOTToken True DOT
