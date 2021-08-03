@@ -8,8 +8,14 @@ public export
 data DOTToken : Type where
   ||| A keyword
   Keyword : (kw : String) -> DOTToken
-  ||| An identifier
-  ID : (id_ : String) -> DOTToken
+  ||| An identifier as a name
+  NameID : (name : String) -> DOTToken
+  ||| An identifier as a numeral
+  NumeralID : (numeral : String) -> DOTToken
+  ||| An identifier as a double-quoted string
+  StringID : (str : String) -> DOTToken
+  ||| An identifier as a HTML string
+  HTML_ID : (html : String) -> DOTToken
   ||| An edge operation in a directed graph
   DiGEdgeOp : DOTToken
   ||| An edge operation in a graph
@@ -44,7 +50,10 @@ data DOTToken : Type where
 export
 Show DOTToken where
   show (Keyword kw) = "(KW " ++ kw ++ ")"
-  show (ID id_) = "(ID " ++ id_ ++ ")"
+  show (NameID name) = "(NameID " ++ name ++ ")"
+  show (NumeralID numeral) = "(NumeralID " ++ numeral ++ ")"
+  show (StringID str) = "(StringID " ++ str ++ ")"
+  show (HTML_ID html) = "(HTML_ID " ++ html ++ ")"
   show DiGEdgeOp = "DiEO"
   show GrEdgeOp = "GrEO"
   show (CompassPt pt) = "(CPt " ++ pt ++ ")"
@@ -99,18 +108,18 @@ keyword =  nodeKW
 underscore : Lexer
 underscore = is '_'
 
-idTyp1Head : Lexer
-idTyp1Head =  alpha
+nameIDHead : Lexer
+nameIDHead =  alpha
           <|> underscore
 
-idTyp1Rest : Lexer
-idTyp1Rest =  alphaNum
+nameIDRest : Lexer
+nameIDRest =  alphaNum
           <|> underscore
 
--- Any string of alphabetic characters, underscores, or digits, not beginning
--- with a digit
-classicIdentifier : Lexer
-classicIdentifier = idTyp1Head <+> many idTyp1Rest
+||| Any string of alphabetic characters, underscores, or digits, not beginning
+||| with a digit.
+nameID : Lexer
+nameID = nameIDHead <+> many nameIDRest
 
 minus : Lexer
 minus = is '-'
@@ -131,29 +140,23 @@ decimalNum : Lexer
 decimalNum = digits <+> opt decimalNumRest
 
 -- \.[0-9]+|[0-9]+(\.[0-9]*)?
-idTyp2Num : Lexer
-idTyp2Num =  dotNum
-         <|> decimalNum
+numeral_helper : Lexer
+numeral_helper =  dotNum
+              <|> decimalNum
 
--- a numeral
--- [-]?(\.[0-9]+|[0-9]+(\.[0-9]*)?)
-numeral : Lexer
-numeral = opt minus <+> idTyp2Num
+||| A numeral:
+||| [-]?(\.[0-9]+|[0-9]+(\.[0-9]*)?)
+numeralID : Lexer
+numeralID = opt minus <+> numeral_helper
 
--- any double-quoted string possibly containing escaped quotes
-doubleQuotedString : Lexer
-doubleQuotedString = stringLit
+||| Any double-quoted string possibly containing escaped quotes.
+stringID : Lexer
+stringID = stringLit
 
-||| An ID is one of the following:
-||| - any string of alphabetic characters, underscores, or digits, not beginning
-|||   with a digit
-||| - a numeral
-||| - any double-quoted string possibly containing escaped quotes
-||| - an HTML string (TODO)
-id_ : Lexer
-id_ =  classicIdentifier
-   <|> numeral
-   <|> doubleQuotedString
+--  v  this is probably a library on its own...
+||| An HTML string
+htmlID : Lexer
+htmlID = ?todo_htmlIDs_are_not_implemented_atm
 
 
 -- Edge operations --
@@ -284,7 +287,10 @@ equal = is '='
 ||| A mapping from the @Lexer@s to a function of type String -> @DOTToken@
 dotTokenMap : TokenMap DOTToken
 dotTokenMap = [ (keyword,             \str => Keyword str)
-              , (id_,                 \str => ID str)
+              , (nameID,              \name => NameID name)
+              , (numeralID,           \numeral => NumeralID numeral)
+              , (stringID,            \str => StringID str)
+              , (htmlID,              \html => HTML_ID html)
               , (digraphEdgeOp,       const DiGEdgeOp)
               , (graphEdgeOp,         const GrEdgeOp)
               , (compassPt,           \pt  => CompassPt pt)

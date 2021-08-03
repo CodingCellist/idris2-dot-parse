@@ -12,42 +12,65 @@ import Graphics.DOT.Representation
 -- terminals --
 
 lBrace : Grammar DOTToken True ()
-lBrace = terminal "Expected LBrace"
+lBrace = terminal "Expected '{'"
             (\case LBrace => Just ()
                    _ => Nothing)
 
 rBrace : Grammar DOTToken True ()
-rBrace = terminal "Expected RBrace (might not be properly closed?)"
+rBrace = terminal "Expected '}' (might not be properly closed?)"
             (\case RBrace => Just ()
                    _ => Nothing)
 
 lBracket : Grammar DOTToken True ()
-lBracket = terminal "Expected LBracket"
+lBracket = terminal "Expected '['"
               (\case LBracket => Just ()
                      _ => Nothing)
 
 rBracket : Grammar DOTToken True ()
-rBracket = terminal "Expected RBracket (might not be properly closed?)"
+rBracket = terminal "Expected ']' (might not be properly closed?)"
               (\case RBracket => Just ()
                      _ => Nothing)
 
 semicolon : Grammar DOTToken True ()
-semicolon = terminal "Expected semicolon (shouldn't get this message)"
+semicolon = terminal "Expected ';' (shouldn't get this message)"
               (\case Semicolon => Just ()
                      _ => Nothing)
 
 comma : Grammar DOTToken True ()
-comma = terminal "Expected comma"
+comma = terminal "Expected ','"
           (\case Comma => Just ()
                  _ => Nothing)
 
 equals : Grammar DOTToken True ()
-equals = terminal "Expected equals"
+equals = terminal "Expected '='"
           (\case Equal => Just ()
                  _ => Nothing)
 
+nameID : Grammar DOTToken True DOT
+nameID = terminal "Not a name"
+          (\case (NameID str) => Just (NameID str)
+                 _ => Nothing)
+
+numeralID : Grammar DOTToken True DOT
+numeralID = terminal "Not a numeral"
+              (\case (NumeralID num) => Just (NumeralID num)
+                     _ => Nothing)
+
+stringID : Grammar DOTToken True DOT
+stringID = terminal "Not a string"
+            (\case (StringID str) => Just (StringID str)
+                   _ => Nothing)
+
+htmlID : Grammar DOTToken True DOT
+htmlID = terminal "Not an HTML string"
+          (\case (HTML_ID html) => Just (HTML_ID html)
+                 _ => Nothing)
+
 identifier : Grammar DOTToken True DOT
-identifier = ?identifier_TODO
+identifier =  nameID
+          <|> numeralID
+          <|> stringID
+          <|> htmlID
 
 assign_ : Grammar DOTToken True DOT
 assign_ = do idLHS <- identifier

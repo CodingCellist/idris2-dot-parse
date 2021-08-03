@@ -24,6 +24,12 @@ data DOT : Type where
   SubGraph : DOT
   Strict : DOT
 
+  -- Identifiers
+  NameID : (name : String) -> DOT
+  NumeralID : (numeral : String) -> DOT
+  StringID : (str : String) -> DOT
+  HTML_ID : (html : String) -> DOT
+
   -- Operators
   -- TODO: split things into separate types to limit what can go where?
   Assign : Vect 2 DOT -> DOT
