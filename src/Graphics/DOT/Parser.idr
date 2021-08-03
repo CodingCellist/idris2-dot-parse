@@ -9,7 +9,7 @@ import Graphics.DOT.Representation
 
 %default total
 
--- terminals --
+-- Terminals --
 
 lBrace : Grammar DOTToken True ()
 lBrace = terminal "Expected '{'"
@@ -66,21 +66,33 @@ htmlID = terminal "Not an HTML string"
           (\case (HTML_ID html) => Just (HTML_ID html)
                  _ => Nothing)
 
+
+-- Non-terminals --
+
+||| An identifier is either:
+||| - a name
+||| - a numeral
+||| - a quoted string
+||| - an HTML string
 identifier : Grammar DOTToken True DOT
 identifier =  nameID
           <|> numeralID
           <|> stringID
           <|> htmlID
 
+||| Assignment, i.e.
+||| ID '=' ID
 assign_ : Grammar DOTToken True DOT
 assign_ = do idLHS <- identifier
              equals
              idRHS <- identifier
              pure (Assign [idLHS, idRHS])    -- returns assign node in AST
 
+||| Separators are semicolons and commas, but they are purely aesthetic.
 sepChoice : Grammar DOTToken False ()
 sepChoice = ignore $ optional (choose semicolon comma)
 
+||| An a_list is an assignment, optionally followed by a separator, 
 a_list : Grammar DOTToken True DOT
 a_list = (do head <- assign_
              sepChoice
@@ -90,10 +102,10 @@ a_list = (do head <- assign_
               rest <- a_list
               ?a_list_ast2)
 
+||| Keywords ('node', 'edge', 'graph', 'digraph', 'subgraph', 'strict').
 keyword : Grammar DOTToken True DOT
-keyword = terminal "Expected a keyword"
+keyword = terminal "Unknown keyword"
             (\case Keyword kw =>
-                      -- TODO: refine `Keyword` token?
                       case toLower kw of
                            "node" => Just Node
                            "edge" => Just Edge
@@ -104,10 +116,10 @@ keyword = terminal "Expected a keyword"
                            _ => Nothing
                    _ => Nothing)
 
+||| Compass points (n, ne, e, se, s, sw, w, nw, c, _).
 compassPt : Grammar DOTToken True DOT
-compassPt = terminal "Expected a compass point"
+compassPt = terminal "Unknown compass-point"
               (\case CompassPt pt =>
-                        -- TODO: refine `CompassPt` token?
                         case pt of
                              "n"  => Just North
                              "ne" => Just NorthEast
