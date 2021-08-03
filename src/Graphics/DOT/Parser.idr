@@ -66,6 +66,42 @@ htmlID = terminal "Not an HTML string"
           (\case (HTML_ID html) => Just (HTML_ID html)
                  _ => Nothing)
 
+||| Keywords ('node', 'edge', 'graph', 'digraph', 'subgraph', 'strict').
+keyword : Grammar DOTToken True DOT
+keyword = terminal "Unknown keyword"
+            (\case Keyword kw =>
+                      case toLower kw of
+                           "node" => Just Node
+                           "edge" => Just Edge
+                           "graph" => Just Graph
+                           "digraph" => Just DiGraph
+                           "subgraph" => Just SubGraph
+                           "strict" => Just Strict
+                           _ => Nothing
+                   _ => Nothing)
+
+colon : Grammar DOTToken True DOT
+colon = terminal "Expected ':'"
+          (\case Colon => Just Colon
+                 _ => Nothing)
+
+||| Compass points (n, ne, e, se, s, sw, w, nw, c, _).
+compassPt : Grammar DOTToken True DOT
+compassPt = terminal "Unknown compass-point"
+              (\case CompassPt pt =>
+                        case pt of
+                             "n"  => Just North
+                             "ne" => Just NorthEast
+                             "e"  => Just East
+                             "se" => Just SouthEast
+                             "s"  => Just South
+                             "sw" => Just SouthWest
+                             "w"  => Just West
+                             "nw" => Just NorthWest
+                             "c"  => Just CenterCPt
+                             "_"  => Just UnderCPt
+                             _    => Nothing
+                     _ => Nothing)
 
 -- Non-terminals --
 
@@ -103,36 +139,25 @@ a_list = (do head <- assign_
               rest <- a_list
               pure (AList (head :: [rest])))
 
-||| Keywords ('node', 'edge', 'graph', 'digraph', 'subgraph', 'strict').
-keyword : Grammar DOTToken True DOT
-keyword = terminal "Unknown keyword"
-            (\case Keyword kw =>
-                      case toLower kw of
-                           "node" => Just Node
-                           "edge" => Just Edge
-                           "graph" => Just Graph
-                           "digraph" => Just DiGraph
-                           "subgraph" => Just SubGraph
-                           "strict" => Just Strict
-                           _ => Nothing
-                   _ => Nothing)
+||| A colon followed by an ID, optionally followed by more colon+compass_pt
+||| pairs.
+idPort : Grammar DOTToken True DOT
+idPort = do c <- colon
+            id_ <- identifier
+            maybeCPT <- optional compassPt
+            pure (IDPort c id_ maybeCPT)
 
-||| Compass points (n, ne, e, se, s, sw, w, nw, c, _).
-compassPt : Grammar DOTToken True DOT
-compassPt = terminal "Unknown compass-point"
-              (\case CompassPt pt =>
-                        case pt of
-                             "n"  => Just North
-                             "ne" => Just NorthEast
-                             "e"  => Just East
-                             "se" => Just SouthEast
-                             "s"  => Just South
-                             "sw" => Just SouthWest
-                             "w"  => Just West
-                             "nw" => Just NorthWest
-                             "c"  => Just CenterCPt
-                             "_"  => Just UnderCPt
-                             _    => Nothing
-                     _ => Nothing)
+||| A colon followed by a compass_pt.
+cptPort : Grammar DOTToken True DOT
+cptPort = do c <- colon
+             cpt <- compassPt
+             pure (CPTPort c cpt)
 
+||| A port is either:
+||| - A colon followed by an ID, optionally followed by more colon+compass_pt
+|||   pairs.
+||| - A colon followed by a compass_pt.
+port : Grammar DOTToken True DOT
+port =  idPort
+    <|> cptPort
 
