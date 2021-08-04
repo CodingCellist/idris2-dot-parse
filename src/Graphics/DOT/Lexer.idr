@@ -1,6 +1,7 @@
 module Graphics.DOT.Lexer
 
 import Text.Lexer
+import Data.String
 
 %default total
 
@@ -286,7 +287,7 @@ equal = is '='
 
 ||| A mapping from the @Lexer@s to a function of type String -> @DOTToken@
 dotTokenMap : TokenMap DOTToken
-dotTokenMap = [ (keyword,             \str => Keyword str)
+dotTokenMap = [ (keyword,             \str => Keyword (toLower str))
               , (nameID,              \name => NameID name)
               , (numeralID,           \numeral => NumeralID numeral)
               , (stringID,            \str => StringID str)

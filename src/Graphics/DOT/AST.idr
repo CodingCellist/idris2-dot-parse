@@ -39,6 +39,8 @@ data DOT : Type where
   -- attr_list AST node; should a_list look similar?
   AttrList : List DOT -> DOT
 
+  AttrStmt : (kw : DOT) -> (attrList : DOT) -> DOT
+
   -- Operators
   -- TODO: split things into separate types to limit what can go where?
   Assign : Vect 2 DOT -> DOT

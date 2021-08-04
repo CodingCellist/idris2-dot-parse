@@ -71,19 +71,44 @@ htmlID = terminal "Not an HTML string"
           (\case (HTML_ID html) => Just (HTML_ID html)
                  _ => Nothing)
 
+nodeKW : Grammar DOTToken True DOT
+nodeKW = terminal "Expected 'node' keyword"
+          (\case Keyword "node" => Just Node
+                 _ => Nothing)
+
+edgeKW : Grammar DOTToken True DOT
+edgeKW = terminal "Expecetd 'edge' keyword"
+          (\case Keyword "edge" => Just Edge
+                 _ => Nothing)
+
+graphKW : Grammar DOTToken True DOT
+graphKW = terminal "Expected 'graph' keyword"
+           (\case Keyword "graph" => Just Graph
+                  _ => Nothing)
+
+digraphKW : Grammar DOTToken True DOT
+digraphKW = terminal "Expected 'digraph' keyword"
+              (\case Keyword "digraph" => Just Graph
+                     _ => Nothing)
+
+subgraphKW : Grammar DOTToken True DOT
+subgraphKW = terminal "Expected 'subgraph' keyword"
+              (\case Keyword "subgraph" => Just SubGraph
+                     _ => Nothing)
+
+strictKW : Grammar DOTToken True DOT
+strictKW = terminal "Expected 'strict' keyword"
+            (\case Keyword "strict" => Just Strict
+                   _ => Nothing)
+
 ||| Keywords ('node', 'edge', 'graph', 'digraph', 'subgraph', 'strict').
 keyword : Grammar DOTToken True DOT
-keyword = terminal "Unknown keyword"
-            (\case Keyword kw =>
-                      case toLower kw of
-                           "node" => Just Node
-                           "edge" => Just Edge
-                           "graph" => Just Graph
-                           "digraph" => Just DiGraph
-                           "subgraph" => Just SubGraph
-                           "strict" => Just Strict
-                           _ => Nothing
-                   _ => Nothing)
+keyword =  nodeKW
+       <|> edgeKW
+       <|> graphKW
+       <|> digraphKW
+       <|> subgraphKW
+       <|> strictKW
 
 ||| Compass points (n, ne, e, se, s, sw, w, nw, c, _).
 compassPt : Grammar DOTToken True DOT
@@ -168,6 +193,18 @@ attr_list =  (do lBracket
             maybeToList : Maybe DOT -> List DOT
             maybeToList Nothing    = []
             maybeToList (Just dot) = [dot]
+
+||| An attr_stmt is one of the keywords 'graph', 'node', or 'edge', followed by
+||| an attr_list.
+attr_stmt : Grammar DOTToken True DOT
+attr_stmt = do kw <- gne
+               attrList <- attr_list
+               pure (AttrStmt kw attrList)
+  where
+    gne : Grammar DOTToken True DOT
+    gne =  graphKW
+       <|> nodeKW
+       <|> edgeKW
 
 ||| A colon followed by an ID, optionally followed by more colon+compass_pt
 ||| pairs.

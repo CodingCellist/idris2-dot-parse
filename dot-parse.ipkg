@@ -15,7 +15,7 @@ license = "BSD-3-Clause"
 -- modules to install
 modules = Graphics.DOT.Lexer
         , Graphics.DOT.Parser
-        , Graphics.DOT.Representation
+        , Graphics.DOT.AST
         , Graphics.DOT
 
 -- main file (i.e. file to load at REPL)
