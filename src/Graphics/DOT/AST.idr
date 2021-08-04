@@ -1,19 +1,22 @@
 ||| Types for representing a DOT file/graph in Idris
-module Graphics.DOT.Representation
+module Graphics.DOT.AST
 
 import Data.Vect
 
 {- TODO:
- - [ ] How to best split things into types?
- - [ ] Should each keyword have its own constructor (gut instinct: yes)
- - [ ] Use `Maybe` for optional keywords/modifiers
- - [ ] Identifiers
+ - [x] How to best split things into types?
+   * Answer: don't do so. Worry about getting things working first.
+ - [x] Should each keyword have its own constructor (gut instinct: yes)
+   * At least for now (see previous point).
+ - [x] ~~Use `Maybe` for optional keywords/modifiers~~
+   * [x] Nope, `List DOT` seems to work better.
+ - [x] Identifiers
  ... the rest of this todo-list ...
  - [ ] Nice type-level functions to avoid having to specify `Nothing` all the
        time
  -}
 
-||| A DOT graph
+||| The stuff in the AST of a DOT graph
 public export
 data DOT : Type where
   -- Keywords
