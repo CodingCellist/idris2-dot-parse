@@ -163,7 +163,7 @@ a_list' =  (do head <- assign_
                pure (head :: []))
 
 ||| An 'a_list' is an assignment, optionally followed by a separator, optionally
-||| followed by more of an 'a_list'.
+||| followed by more of an 'a_list' (see helper `a_list'`).
 a_list : Grammar DOTToken True DOT
 a_list = do l <- a_list'
             pure (AList l)
@@ -177,22 +177,42 @@ a_list = do l <- a_list'
 --              rest <- a_list
 --              pure (AList (head :: [rest])))
 
-||| An attr_list is a '[', optionally followed by an a_list, followed by a ']',
-||| optionally followed by another attr_list.
+attr_list' : Grammar DOTToken True (List DOT)
+attr_list' =  (do lBracket
+                  Just aList <- optional a_list
+                    | Nothing => do rBracket
+                                    rest <- attr_list'
+                                    pure rest
+                  rBracket
+                  rest <- attr_list'
+                  pure (aList :: rest))
+          <|> (do lBracket
+                  Just aList <- optional a_list
+                    | Nothing => do rBracket
+                                    pure []
+                  rBracket
+                  pure [aList])
+
+||| An 'attr_list' is a '[', optionally followed by an 'a_list', followed by a
+||| ']', optionally followed by another 'attr_list' (see helper `attr_list'`).
 attr_list : Grammar DOTToken True DOT
-attr_list =  (do lBracket
-                 mAlist <- optional a_list
-                 rBracket
-                 pure (AttrList (maybeToList mAlist)))
-         <|> (do lBracket
-                 mAlist <- optional a_list
-                 rBracket
-                 rest <- attr_list
-                 pure (AttrList ((maybeToList mAlist) ++ [rest])))
-          where
-            maybeToList : Maybe DOT -> List DOT
-            maybeToList Nothing    = []
-            maybeToList (Just dot) = [dot]
+attr_list = do l <- attr_list'
+               pure (AttrList l)
+
+-- OLD IMPLEMENTATION:
+--attr_list =  (do lBracket
+--                 mAlist <- optional a_list
+--                 rBracket
+--                 pure (AttrList (maybeToList mAlist)))
+--         <|> (do lBracket
+--                 mAlist <- optional a_list
+--                 rBracket
+--                 rest <- attr_list
+--                 pure (AttrList ((maybeToList mAlist) ++ [rest])))
+--          where
+--            maybeToList : Maybe DOT -> List DOT
+--            maybeToList Nothing    = []
+--            maybeToList (Just dot) = [dot]
 
 ||| An attr_stmt is one of the keywords 'graph', 'node', or 'edge', followed by
 ||| an attr_list.
