@@ -154,13 +154,10 @@ sepChoice : Grammar DOTToken False ()
 sepChoice = ignore $ optional (choose semicolon comma)
 
 a_list' : Grammar DOTToken True (List DOT)
-a_list' =  (do head <- assign_
-               sepChoice
-               rest <- a_list'
-               pure (head :: rest))
-       <|> (do head <- assign_
-               sepChoice
-               pure (head :: []))
+a_list' = do head <- assign_
+             sepChoice
+             rest <- option [] a_list'
+             pure (head :: rest)
 
 ||| An 'a_list' is an assignment, optionally followed by a separator, optionally
 ||| followed by more of an 'a_list' (see helper `a_list'`).
@@ -178,20 +175,14 @@ a_list = do l <- a_list'
 --              pure (AList (head :: [rest])))
 
 attr_list' : Grammar DOTToken True (List DOT)
-attr_list' =  (do lBracket
-                  Just aList <- optional a_list
-                    | Nothing => do rBracket
-                                    rest <- attr_list'
-                                    pure rest
-                  rBracket
-                  rest <- attr_list'
-                  pure (aList :: rest))
-          <|> (do lBracket
-                  Just aList <- optional a_list
-                    | Nothing => do rBracket
-                                    pure []
-                  rBracket
-                  pure [aList])
+attr_list' = do lBracket
+                mAList <- optional a_list
+                rBracket
+                rest <- option [] attr_list'
+                the (Grammar _ False _) $   -- case can confuse the type-checker
+                  case mAList of
+                       Nothing      => pure rest
+                       (Just aList) => pure (aList :: rest)
 
 ||| An 'attr_list' is a '[', optionally followed by an 'a_list', followed by a
 ||| ']', optionally followed by another 'attr_list' (see helper `attr_list'`).
@@ -201,14 +192,14 @@ attr_list = do l <- attr_list'
 
 -- OLD IMPLEMENTATION:
 --attr_list =  (do lBracket
---                 mAlist <- optional a_list
+--                 mAList <- optional a_list
 --                 rBracket
---                 pure (AttrList (maybeToList mAlist)))
+--                 pure (AttrList (maybeToList mAList)))
 --         <|> (do lBracket
---                 mAlist <- optional a_list
+--                 mAList <- optional a_list
 --                 rBracket
 --                 rest <- attr_list
---                 pure (AttrList ((maybeToList mAlist) ++ [rest])))
+--                 pure (AttrList ((maybeToList mAList) ++ [rest])))
 --          where
 --            maybeToList : Maybe DOT -> List DOT
 --            maybeToList Nothing    = []
