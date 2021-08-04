@@ -139,6 +139,23 @@ a_list = (do head <- assign_
               rest <- a_list
               pure (AList (head :: [rest])))
 
+||| An attr_list is a '[', optionally followed by an a_list, followed by a ']',
+||| optionally followed by another attr_list.
+attr_list : Grammar DOTToken True DOT
+attr_list =  (do lBracket
+                 mAlist <- optional a_list
+                 rBracket
+                 pure (AttrList (maybeToList mAlist)))
+         <|> (do lBracket
+                 mAlist <- optional a_list
+                 rBracket
+                 rest <- attr_list
+                 pure (AttrList ((maybeToList mAlist) ++ [rest])))
+          where
+            maybeToList : Maybe DOT -> List DOT
+            maybeToList Nothing    = []
+            maybeToList (Just dot) = [dot]
+
 ||| A colon followed by an ID, optionally followed by more colon+compass_pt
 ||| pairs.
 idPort : Grammar DOTToken True DOT
