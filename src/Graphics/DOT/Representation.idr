@@ -43,11 +43,9 @@ data DOT : Type where
   DiEdgeOp : Vect 2 DOT -> DOT
   EdgeOp : Vect 2 DOT -> DOT
 
-  Colon : DOT
-
   -- Ports
-  IDPort  : (colon : DOT) -> (id : DOT) -> (c_pt : Maybe DOT) -> DOT
-  CPTPort : (colon : DOT) -> (c_pt : DOT) -> DOT
+  IDPort  : (id : DOT) -> (c_pt : Maybe DOT) -> DOT
+  CPTPort : (c_pt : DOT) -> DOT
 
 
   -- Compass points

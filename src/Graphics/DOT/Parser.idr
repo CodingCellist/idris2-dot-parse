@@ -31,6 +31,11 @@ rBracket = terminal "Expected ']' (might not be properly closed?)"
               (\case RBracket => Just ()
                      _ => Nothing)
 
+colon : Grammar DOTToken True ()
+colon = terminal "Expected ':'"
+          (\case Colon => Just ()
+                 _ => Nothing)
+
 semicolon : Grammar DOTToken True ()
 semicolon = terminal "Expected ';' (shouldn't get this message)"
               (\case Semicolon => Just ()
@@ -79,11 +84,6 @@ keyword = terminal "Unknown keyword"
                            "strict" => Just Strict
                            _ => Nothing
                    _ => Nothing)
-
-colon : Grammar DOTToken True DOT
-colon = terminal "Expected ':'"
-          (\case Colon => Just Colon
-                 _ => Nothing)
 
 ||| Compass points (n, ne, e, se, s, sw, w, nw, c, _).
 compassPt : Grammar DOTToken True DOT
@@ -159,16 +159,16 @@ attr_list =  (do lBracket
 ||| A colon followed by an ID, optionally followed by more colon+compass_pt
 ||| pairs.
 idPort : Grammar DOTToken True DOT
-idPort = do c <- colon
+idPort = do colon
             id_ <- identifier
             maybeCPT <- optional compassPt
-            pure (IDPort c id_ maybeCPT)
+            pure (IDPort id_ maybeCPT)
 
 ||| A colon followed by a compass_pt.
 cptPort : Grammar DOTToken True DOT
-cptPort = do c <- colon
+cptPort = do colon
              cpt <- compassPt
-             pure (CPTPort c cpt)
+             pure (CPTPort cpt)
 
 ||| A port is either:
 ||| - A colon followed by an ID, optionally followed by more colon+compass_pt
