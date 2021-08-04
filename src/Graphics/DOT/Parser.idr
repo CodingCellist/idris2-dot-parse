@@ -5,7 +5,7 @@ import Data.String
 import Data.Vect
 
 import Graphics.DOT.Lexer
-import Graphics.DOT.Representation
+import Graphics.DOT.AST
 
 %default total
 
@@ -128,16 +128,29 @@ assign_ = do idLHS <- identifier
 sepChoice : Grammar DOTToken False ()
 sepChoice = ignore $ optional (choose semicolon comma)
 
+a_list' : Grammar DOTToken True (List DOT)
+a_list' =  (do head <- assign_
+               sepChoice
+               rest <- a_list'
+               pure (head :: rest))
+       <|> (do head <- assign_
+               sepChoice
+               pure (head :: []))
+
 ||| An 'a_list' is an assignment, optionally followed by a separator, optionally
 ||| followed by more of an 'a_list'.
 a_list : Grammar DOTToken True DOT
-a_list = (do head <- assign_
-             sepChoice
-             pure (AList [head]))
-      <|> (do head <- assign_
-              sepChoice
-              rest <- a_list
-              pure (AList (head :: [rest])))
+a_list = do l <- a_list'
+            pure (AList l)
+
+-- OLD IMPLEMENTATION:
+--a_list = (do head <- assign_
+--             sepChoice
+--             pure (AList [head]))
+--      <|> (do head <- assign_
+--              sepChoice
+--              rest <- a_list
+--              pure (AList (head :: [rest])))
 
 ||| An attr_list is a '[', optionally followed by an a_list, followed by a ']',
 ||| optionally followed by another attr_list.
