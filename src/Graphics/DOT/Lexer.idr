@@ -9,6 +9,7 @@ public export
 data DOTToken : Type where
   ||| A keyword
   Keyword : (kw : String) -> DOTToken
+
   ||| An identifier as a name
   NameID : (name : String) -> DOTToken
   ||| An identifier as a numeral
@@ -17,6 +18,7 @@ data DOTToken : Type where
   StringID : (str : String) -> DOTToken
   ||| An identifier as a HTML string
   HTML_ID : (html : String) -> DOTToken
+
   ||| An edge operation in a directed graph
   DiGEdgeOp : DOTToken
   ||| An edge operation in a graph
@@ -29,8 +31,10 @@ data DOTToken : Type where
   MultilineBackslash : DOTToken
   ||| A double-quoted-string concatenation operator ('+')
   StrConcat : DOTToken
+
   ||| Any amount of whitespace
   Whitespace : (ws : String) -> DOTToken
+
   ||| [
   LBracket : DOTToken
   ||| ]

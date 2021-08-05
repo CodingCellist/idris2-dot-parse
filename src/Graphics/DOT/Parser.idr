@@ -153,6 +153,7 @@ assign_ = do idLHS <- identifier
 sepChoice : Grammar DOTToken False ()
 sepChoice = ignore $ optional (choose semicolon comma)
 
+-- helper for `a_list`
 a_list' : Grammar DOTToken True (List DOT)
 a_list' = do head <- assign_
              sepChoice
@@ -174,6 +175,7 @@ a_list = do l <- a_list'
 --              rest <- a_list
 --              pure (AList (head :: [rest])))
 
+-- helper for `attr_list`
 attr_list' : Grammar DOTToken True (List DOT)
 attr_list' = do lBracket
                 mAList <- optional a_list
@@ -208,9 +210,10 @@ attr_list = do l <- attr_list'
 ||| An attr_stmt is one of the keywords 'graph', 'node', or 'edge', followed by
 ||| an attr_list.
 attr_stmt : Grammar DOTToken True DOT
-attr_stmt = do kw <- gne
-               attrList <- attr_list
-               pure (AttrStmt kw attrList)
+attr_stmt =
+  do kw <- gne    -- (graph|node|edge)
+     attrList <- attr_list
+     pure (AttrStmt kw attrList)
   where
     gne : Grammar DOTToken True DOT
     gne =  graphKW

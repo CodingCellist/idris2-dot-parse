@@ -3,19 +3,6 @@ module Graphics.DOT.AST
 
 import Data.Vect
 
-{- TODO:
- - [x] How to best split things into types?
-   * Answer: don't do so. Worry about getting things working first.
- - [x] Should each keyword have its own constructor (gut instinct: yes)
-   * At least for now (see previous point).
- - [x] ~~Use `Maybe` for optional keywords/modifiers~~
-   * [x] Nope, `List DOT` seems to work better.
- - [x] Identifiers
- ... the rest of this todo-list ...
- - [ ] Nice type-level functions to avoid having to specify `Nothing` all the
-       time
- -}
-
 ||| The stuff in the AST of a DOT graph
 public export
 data DOT : Type where
@@ -33,12 +20,10 @@ data DOT : Type where
   StringID : (str : String) -> DOT
   HTML_ID : (html : String) -> DOT
 
+  -- Attributes
   -- a_list AST node, takes list of stuff
   AList : List DOT -> DOT   -- non-empty?
-
-  -- attr_list AST node; should a_list look similar?
   AttrList : List DOT -> DOT
-
   AttrStmt : (kw : DOT) -> (attrList : DOT) -> DOT
 
   -- Operators
