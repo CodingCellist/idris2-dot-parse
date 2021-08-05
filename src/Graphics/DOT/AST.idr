@@ -6,6 +6,13 @@ import Data.Vect
 ||| The stuff in the AST of a DOT graph
 public export
 data DOT : Type where
+  -- Graphs - The bit where everything starts
+  Graph :  (strict : Bool)
+        -> (type : DOT)
+        -> (id_ : Maybe DOT)
+        -> (stmtList : DOT)
+        -> DOT
+
   -- Statements
   StmtList : List DOT -> DOT
   Stmt : (stmt : DOT) -> DOT
@@ -13,7 +20,7 @@ data DOT : Type where
   -- Keywords
   Node : DOT
   Edge : DOT
-  Graph : DOT
+  GraphKW : DOT
   DiGraph : DOT
   SubGraph : DOT
   Strict : DOT

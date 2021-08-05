@@ -83,12 +83,12 @@ edgeKW = terminal "Expecetd 'edge' keyword"
 
 graphKW : Grammar DOTToken True DOT
 graphKW = terminal "Expected 'graph' keyword"
-           (\case Keyword "graph" => Just Graph
+           (\case Keyword "graph" => Just GraphKW
                   _ => Nothing)
 
 digraphKW : Grammar DOTToken True DOT
 digraphKW = terminal "Expected 'digraph' keyword"
-              (\case Keyword "digraph" => Just Graph
+              (\case Keyword "digraph" => Just DiGraph
                      _ => Nothing)
 
 subgraphKW : Grammar DOTToken True DOT
@@ -283,9 +283,10 @@ mutual
   ||| '{', followed by a 'stmt_list', followed by a '}'.
   subgraph : Grammar DOTToken True DOT
   subgraph = do sID <- optional subgraphID
-                rBrace
+                lBrace
                 stmtList <- stmt_list
-                ?subgraph_rhs
+                rBrace
+                pure (Subgraph sID stmtList)
 
   -- helper for `edgeRHS'` (which is itself a helper) and 'edge_stmt'
   nidORsubgr : Grammar DOTToken True DOT
@@ -339,4 +340,27 @@ mutual
   stmt_list : Grammar DOTToken True DOT
   stmt_list = do theStmts <- stmt_list'
                  pure (StmtList theStmts)
+
+  -- Is the graph strict? Helper for 'graph'.
+  isStrict : Grammar DOTToken False Bool
+  isStrict = do (Just _) <- optional strictKW
+                  | Nothing => pure False
+                pure True
+
+  -- Directed or undirected graph? Helper for 'graph'.
+  graphType : Grammar DOTToken True DOT
+  graphType =  graphKW
+           <|> digraphKW
+
+  ||| A 'graph' is optionally the keyword "strict", followed by either the
+  ||| keywords "graph" or "digraph", optionally followed by an identifier,
+  ||| followed by a 'stmt_list' in braces.
+  graph : Grammar DOTToken True DOT
+  graph = do strict <- isStrict
+             gType <- graphType
+             mID <- optional identifier
+             lBrace
+             stmtList <- stmt_list
+             rBrace
+             pure (Graph strict gType mID stmtList)
 

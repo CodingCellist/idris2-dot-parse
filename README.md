@@ -26,8 +26,11 @@ An Idris2 lexer and parser for
     - [x] keywords
     - [x] compass points
     - [ ] (the other terminals?...)
+  - [ ] "any amount of whitespace may be inserted between the terminals" (from
+        the DOT language reference)
   - [x] identifiers
   - [x] assignment (_ID_ '=' _ID_)
+  - [ ] handle string concatenation
   - [x] attributes
     - [x] `a_list`
     - [x] `attr_list`
@@ -43,7 +46,8 @@ An Idris2 lexer and parser for
   - [x] subgraphs
   - [x] statements (`stmt`)
   - [x] list of statements (`stmt_list`)
-  - [ ] **graphs**, the thing at the top of it all
+  - [x] **graphs**, the thing at the top of it all
+  - [ ] handle comments
 - [ ] Semantic analysis
 - [ ] Idris DOT representation/reasoning
 - [ ] ... the rest of this todo-list ...
