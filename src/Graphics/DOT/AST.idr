@@ -28,15 +28,18 @@ data DOT : Type where
 
   -- Operators
   -- TODO: split things into separate types to limit what can go where?
-  Assign : Vect 2 DOT -> DOT
+  Assign : (ids : Vect 2 DOT) -> DOT
   StrConcat : Vect (S (S k)) DOT -> DOT   -- must have at least 2 strings
   DiEdgeOp : Vect 2 DOT -> DOT
   EdgeOp : Vect 2 DOT -> DOT
 
-  -- Ports
-  IDPort  : (id : DOT) -> (c_pt : Maybe DOT) -> DOT
-  CPTPort : (c_pt : DOT) -> DOT
+  NodeID : (id_ : DOT) -> (port : Maybe DOT) -> DOT
+  NodeStmt : (nID : DOT) -> (attrList : Maybe DOT) -> DOT
 
+
+  -- Ports
+  IDPort  : (id_ : DOT) -> (c_pt : Maybe DOT) -> DOT
+  CPTPort : (c_pt : DOT) -> DOT
 
   -- Compass points
   North : DOT

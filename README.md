@@ -33,9 +33,9 @@ An Idris2 lexer and parser for
     - [x] `attr_list`
     - [x] `attr_stmt`
   - [x] ports
-  - [ ] nodes
-    - [ ] `node_id`
-    - [ ] `node_stmt`
+  - [x] nodes
+    - [x] `node_id`
+    - [x] `node_stmt`
   - [ ] edges
     - [ ] `edgeRHS`
     - [ ] `edge_stmt`

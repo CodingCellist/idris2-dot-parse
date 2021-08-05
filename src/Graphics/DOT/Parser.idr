@@ -242,3 +242,15 @@ port : Grammar DOTToken True DOT
 port =  idPort
     <|> cptPort
 
+||| A 'node_id' is an identifier optionally followed by a port.
+node_id : Grammar DOTToken True DOT
+node_id = do id_ <- identifier
+             mPort <- optional port
+             pure (NodeID id_ mPort)
+
+||| A 'node_stmt' is a 'node_id' optionally followed by an 'attr_list'.
+node_stmt : Grammar DOTToken True DOT
+node_stmt = do nID <- node_id
+               attrList <- optional attr_list
+               pure (NodeStmt nID attrList)
+
