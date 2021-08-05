@@ -6,6 +6,10 @@ import Data.Vect
 ||| The stuff in the AST of a DOT graph
 public export
 data DOT : Type where
+  -- Statements
+  StmtList : List DOT -> DOT
+  Stmt : (stmt : DOT) -> DOT
+
   -- Keywords
   Node : DOT
   Edge : DOT

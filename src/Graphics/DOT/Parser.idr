@@ -284,7 +284,7 @@ mutual
   subgraph : Grammar DOTToken True DOT
   subgraph = do sID <- optional subgraphID
                 rBrace
-                stmtList <- the (Grammar DOTToken True DOT) ?stmt_list  -- TODO
+                stmtList <- stmt_list
                 ?subgraph_rhs
 
   -- helper for `edgeRHS'` (which is itself a helper) and 'edge_stmt'
@@ -312,4 +312,31 @@ mutual
                  rhs <- edgeRHS
                  mAttrList <- optional attr_list
                  pure (EdgeStmt nORs rhs mAttrList)
+
+  -- The possible things that can be in a statement. A helper for 'stmt'.
+  stmtAlts : Grammar DOTToken True DOT
+  stmtAlts =  node_stmt
+          <|> edge_stmt
+          <|> attr_stmt
+          <|> assign_
+          <|> subgraph
+
+  ||| A 'stmt' is either a 'node_stmt', 'edge_stmt', 'attr_stmt', an assignment,
+  ||| or a subgraph.
+  stmt : Grammar DOTToken True DOT
+  stmt = do theStmt <- stmtAlts
+            pure (Stmt theStmt)
+
+  -- helper for 'stmt_list'
+  stmt_list' : Grammar DOTToken True (List DOT)
+  stmt_list' = do aStmt <- stmt
+                  ignore $ optional semicolon   -- we don't store the ';'
+                  rest <- option [] stmt_list'
+                  pure (aStmt :: rest)
+
+  ||| A 'stmt_list' is optionally: a 'stmt', followed by an optional semicolon,
+  ||| followed by more of a 'stmt_list' (see the `stmt_list'` helper).
+  stmt_list : Grammar DOTToken True DOT
+  stmt_list = do theStmts <- stmt_list'
+                 pure (StmtList theStmts)
 

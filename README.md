@@ -41,8 +41,8 @@ An Idris2 lexer and parser for
     - [x] `edgeRHS`
     - [x] `edge_stmt`
   - [x] subgraphs
-  - [ ] statements (`stmt`)
-  - [ ] list of statements (`stmt_list`)
+  - [x] statements (`stmt`)
+  - [x] list of statements (`stmt_list`)
   - [ ] **graphs**, the thing at the top of it all
 - [ ] Semantic analysis
 - [ ] Idris DOT representation/reasoning
