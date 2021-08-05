@@ -36,10 +36,14 @@ An Idris2 lexer and parser for
   - [x] nodes
     - [x] `node_id`
     - [x] `node_stmt`
-  - [ ] edges
-    - [ ] `edgeRHS`
-    - [ ] `edge_stmt`
-  - [ ] subgraphs
+  - [x] edges
+    - [x] `edgeop`
+    - [x] `edgeRHS`
+    - [x] `edge_stmt`
+  - [x] subgraphs
+  - [ ] statements (`stmt`)
+  - [ ] list of statements (`stmt_list`)
+  - [ ] **graphs**, the thing at the top of it all
 - [ ] Semantic analysis
 - [ ] Idris DOT representation/reasoning
 - [ ] ... the rest of this todo-list ...

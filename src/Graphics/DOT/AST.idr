@@ -27,19 +27,30 @@ data DOT : Type where
   AttrStmt : (kw : DOT) -> (attrList : DOT) -> DOT
 
   -- Operators
-  -- TODO: split things into separate types to limit what can go where?
   Assign : (ids : Vect 2 DOT) -> DOT
   StrConcat : Vect (S (S k)) DOT -> DOT   -- must have at least 2 strings
-  DiEdgeOp : Vect 2 DOT -> DOT
-  EdgeOp : Vect 2 DOT -> DOT
+  -- unsure if this is would be better: Vect 2 DOT -> DOT
+  DiGrEdgeOp : DOT
+  GrEdgeOp : DOT    
 
+  -- Edges
+  -- unsure about this one...
+  -- EdgeRHS : (edgeOp : DOT) -> DOT -> (moreRHS : List DOT) -> DOT
+  -- EdgeRHS : List (DOT, DOT) -> DOT   -- this might be better?
+  EdgeRHS : List DOT -> DOT
+  EdgeStmt : DOT -> (rhs : DOT) -> (attrList : Maybe DOT) -> DOT
+
+  -- Nodes
   NodeID : (id_ : DOT) -> (port : Maybe DOT) -> DOT
   NodeStmt : (nID : DOT) -> (attrList : Maybe DOT) -> DOT
-
 
   -- Ports
   IDPort  : (id_ : DOT) -> (c_pt : Maybe DOT) -> DOT
   CPTPort : (c_pt : DOT) -> DOT
+
+  -- Subgraphs
+  SubgraphID : (id_ : Maybe DOT) -> DOT
+  Subgraph : (sID : Maybe DOT) -> (stmtList : DOT) -> DOT
 
   -- Compass points
   North : DOT

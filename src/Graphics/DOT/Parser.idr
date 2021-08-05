@@ -128,6 +128,18 @@ compassPt = terminal "Unknown compass-point"
                              _    => Nothing
                      _ => Nothing)
 
+||| --
+grEdgeOp : Grammar DOTToken True DOT
+grEdgeOp = terminal "Expected '--'"
+            (\case GrEdgeOp => Just GrEdgeOp
+                   _ => Nothing)
+
+||| ->
+diGrEdgeOp : Grammar DOTToken True DOT
+diGrEdgeOp = terminal "Exepected '->'"
+              (\case DiGrEdgeOp => Just DiGrEdgeOp
+                     _ => Nothing)
+
 -- Non-terminals --
 
 ||| An identifier is either:
@@ -253,4 +265,51 @@ node_stmt : Grammar DOTToken True DOT
 node_stmt = do nID <- node_id
                attrList <- optional attr_list
                pure (NodeStmt nID attrList)
+
+||| An edgeop is either '->' in directed graphs, or '--' in undirected graphs.
+edgeop : Grammar DOTToken True DOT
+edgeop =  diGrEdgeOp
+      <|> grEdgeOp
+
+||| A subgraph ID is the keyword 'subgraph' optionally followed by an
+||| identifier.
+subgraphID : Grammar DOTToken True DOT
+subgraphID = do ignore $ subgraphKW   -- only one possible kw, so don't store it
+                mID <- optional identifier
+                pure (SubgraphID mID)
+
+mutual
+  ||| A subgraph is optionally a `subgraphID` (a helper function), followed by a
+  ||| '{', followed by a 'stmt_list', followed by a '}'.
+  subgraph : Grammar DOTToken True DOT
+  subgraph = do sID <- optional subgraphID
+                rBrace
+                stmtList <- the (Grammar DOTToken True DOT) ?stmt_list  -- TODO
+                ?subgraph_rhs
+
+  -- helper for `edgeRHS'` (which is itself a helper) and 'edge_stmt'
+  nidORsubgr : Grammar DOTToken True DOT
+  nidORsubgr =  node_id
+            <|> subgraph
+
+  -- helper for edgeRHS
+  edgeRHS' : Grammar DOTToken True (List DOT)
+  edgeRHS' = do edgeOp <- edgeop
+                nORs <- nidORsubgr
+                rest <- option [] edgeRHS'
+                pure (edgeOp :: nORs :: rest)
+
+  ||| The RHS of an edge is an 'edgeop', followed by either a 'node_id' or a
+  ||| 'subgraph', optionally followed by more 'edgeRHS'.
+  edgeRHS : Grammar DOTToken True DOT
+  edgeRHS = do l <- edgeRHS'
+               pure (EdgeRHS l)
+
+  ||| An 'edge_stmt' is either a 'node_id' or a 'subgraph', followed by an
+  ||| 'edgeRHS', optionally followed by an 'attr_list'.
+  edge_stmt : Grammar DOTToken True DOT
+  edge_stmt = do nORs <- nidORsubgr
+                 rhs <- edgeRHS
+                 mAttrList <- optional attr_list
+                 pure (EdgeStmt nORs rhs mAttrList)
 

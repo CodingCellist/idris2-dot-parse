@@ -20,7 +20,7 @@ data DOTToken : Type where
   HTML_ID : (html : String) -> DOTToken
 
   ||| An edge operation in a directed graph
-  DiGEdgeOp : DOTToken
+  DiGrEdgeOp : DOTToken
   ||| An edge operation in a graph
   GrEdgeOp : DOTToken
   ||| A compass point (used in combination with ports)
@@ -59,7 +59,7 @@ Show DOTToken where
   show (NumeralID numeral) = "(NumeralID " ++ numeral ++ ")"
   show (StringID str) = "(StringID " ++ str ++ ")"
   show (HTML_ID html) = "(HTML_ID " ++ html ++ ")"
-  show DiGEdgeOp = "DiEO"
+  show DiGrEdgeOp = "DiEO"
   show GrEdgeOp = "GrEO"
   show (CompassPt pt) = "(CPt " ++ pt ++ ")"
   show (Comment contents) = "(COM " ++ contents ++ ")"
@@ -296,7 +296,7 @@ dotTokenMap = [ (keyword,             \str => Keyword (toLower str))
               , (numeralID,           \numeral => NumeralID numeral)
               , (stringID,            \str => StringID str)
               , (htmlID,              \html => HTML_ID html)
-              , (digraphEdgeOp,       const DiGEdgeOp)
+              , (digraphEdgeOp,       const DiGrEdgeOp)
               , (graphEdgeOp,         const GrEdgeOp)
               , (compassPt,           \pt  => CompassPt pt)
               , (comment,             \str => Comment str)
