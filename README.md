@@ -25,6 +25,8 @@ An Idris2 lexer and parser for
     - [x] symbols
     - [x] keywords
     - [x] compass points
+    - [x] types of identifier
+    - [x] edge operators ('--' and '->')
     - [ ] (the other terminals?...)
   - [ ] "any amount of whitespace may be inserted between the terminals" (from
         the DOT language reference)

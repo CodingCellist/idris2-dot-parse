@@ -101,15 +101,6 @@ strictKW = terminal "Expected 'strict' keyword"
             (\case Keyword "strict" => Just Strict
                    _ => Nothing)
 
-||| Keywords ('node', 'edge', 'graph', 'digraph', 'subgraph', 'strict').
-keyword : Grammar DOTToken True DOT
-keyword =  nodeKW
-       <|> edgeKW
-       <|> graphKW
-       <|> digraphKW
-       <|> subgraphKW
-       <|> strictKW
-
 ||| Compass points (n, ne, e, se, s, sw, w, nw, c, _).
 compassPt : Grammar DOTToken True DOT
 compassPt = terminal "Unknown compass-point"
@@ -140,7 +131,17 @@ diGrEdgeOp = terminal "Exepected '->'"
               (\case DiGrEdgeOp => Just DiGrEdgeOp
                      _ => Nothing)
 
+
 -- Non-terminals --
+
+||| Keywords ('node', 'edge', 'graph', 'digraph', 'subgraph', 'strict').
+keyword : Grammar DOTToken True DOT
+keyword =  nodeKW
+       <|> edgeKW
+       <|> graphKW
+       <|> digraphKW
+       <|> subgraphKW
+       <|> strictKW
 
 ||| An identifier is either:
 ||| - a name
