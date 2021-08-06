@@ -33,7 +33,7 @@ data DOTToken : Type where
   StrConcat : DOTToken
 
   ||| Any amount of whitespace
-  Whitespace : (ws : String) -> DOTToken
+  Whitespace : DOTToken
 
   ||| [
   LBracket : DOTToken
@@ -65,7 +65,7 @@ Show DOTToken where
   show (Comment contents) = "(COM " ++ contents ++ ")"
   show MultilineBackslash = "MLB"
   show StrConcat = "STR++"
-  show (Whitespace ws) = "WS"
+  show Whitespace = "WS"
   show LBracket = "LBracket"
   show RBracket = "RBracket"
   show LBrace = "LBrace"
@@ -257,6 +257,7 @@ multilineBackslash = (is '\\') <+> newline
 strConcat : Lexer
 strConcat = is '+'
 
+-- "any amount of whitespace may be inserted [...]"
 whitespace : Lexer
 whitespace = spaces
 
@@ -302,7 +303,7 @@ dotTokenMap = [ (keyword,             \str => Keyword (toLower str))
               , (comment,             \str => Comment str)
               , (multilineBackslash,  const MultilineBackslash)
               , (strConcat,           const StrConcat)
-              , (whitespace,          \str => Whitespace str)
+              , (whitespace,          const Whitespace)
               , (lBracket,            const LBracket)
               , (rBracket,            const RBracket)
               , (lBrace,              const LBrace)
