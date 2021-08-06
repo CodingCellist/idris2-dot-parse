@@ -32,9 +32,6 @@ data DOTToken : Type where
   ||| A double-quoted-string concatenation operator ('+')
   StrConcat : DOTToken
 
-  ||| Any amount of whitespace
-  Whitespace : DOTToken
-
   ||| [
   LBracket : DOTToken
   ||| ]
@@ -65,7 +62,6 @@ Show DOTToken where
   show (Comment contents) = "(COM " ++ contents ++ ")"
   show MultilineBackslash = "MLB"
   show StrConcat = "STR++"
-  show Whitespace = "WS"
   show LBracket = "LBracket"
   show RBracket = "RBracket"
   show LBrace = "LBrace"
@@ -80,22 +76,22 @@ Show DOTToken where
 -- DOT keywords are case-insensitive
 
 nodeKW : Lexer
-nodeKW = approx "node"
+nodeKW = manyThen (approx "node") space
 
 edgeKW : Lexer
-edgeKW = approx "edge"
+edgeKW = manyThen (approx "edge") space
 
 graphKW : Lexer
-graphKW = approx "graph"
+graphKW = manyThen (approx "graph") space
 
 digraphKW : Lexer
-digraphKW = approx "digraph"
+digraphKW = manyThen (approx "digraph") space
 
 subgraphKW : Lexer
-subgraphKW = approx "subgraph"
+subgraphKW = manyThen (approx "subgraph") space
 
 strictKW : Lexer
-strictKW = approx "strict"
+strictKW = manyThen (approx "strict") space
 
 ||| Keywords are "node", "edge", "graph", "digraph", "subgraph", and "strict"
 ||| (without the quotes)
@@ -124,7 +120,7 @@ nameIDRest =  alphaNum
 ||| Any string of alphabetic characters, underscores, or digits, not beginning
 ||| with a digit.
 nameID : Lexer
-nameID = nameIDHead <+> many nameIDRest
+nameID = manyThen (nameIDHead <+> many nameIDRest) space
 
 minus : Lexer
 minus = is '-'
@@ -152,66 +148,76 @@ numeral_helper =  dotNum
 ||| A numeral:
 ||| [-]?(\.[0-9]+|[0-9]+(\.[0-9]*)?)
 numeralID : Lexer
-numeralID = opt minus <+> numeral_helper
+numeralID = manyThen (opt minus <+> numeral_helper) space
 
 ||| Any double-quoted string possibly containing escaped quotes.
 stringID : Lexer
-stringID = stringLit
+stringID = manyThen (stringLit) space
 
 --  v  this is probably a library on its own...
 ||| An HTML string
 htmlID : Lexer
-htmlID = ?todo_htmlIDs_are_not_implemented_atm
+htmlID = manyThen (?todo_htmlIDs_are_not_implemented_atm) space
 
 
 -- Edge operations --
 
 digraphEdgeOp : Lexer
-digraphEdgeOp = exact "->"
+digraphEdgeOp = manyThen (exact "->") space
 
 graphEdgeOp : Lexer
-graphEdgeOp = exact "--"
+graphEdgeOp = manyThen (exact "--") space
 
 
 -- Compass Points --
 
 northCPt : Lexer
-northCPt =        is 'n'
+northCPt =
+  manyThen (is 'n') space
 
 northEastCPt : Lexer
-northEastCPt = exact "ne"
+northEastCPt =
+  manyThen (exact "ne") space
 
 eastCPt : Lexer
-eastCPt =         is 'e'
+eastCPt =
+  manyThen (is 'e') space
 
 southEastCPt : Lexer
-southEastCPt = exact "se"
+southEastCPt =
+  manyThen (exact "se") space
 
 southCPt : Lexer
-southCPt =        is 'e'
+southCPt =
+  manyThen (is 'e') space
 
 southWestCPt : Lexer
-southWestCPt = exact "sw"
+southWestCPt =
+  manyThen (exact "sw") space
 
 westCPt : Lexer
-westCPt =         is 'w'
+westCPt =
+  manyThen (is 'w') space
 
 northWestCPt : Lexer
-northWestCPt = exact "nw"
+northWestCPt =
+  manyThen (exact "nw") space
 
 centerCPt : Lexer
-centerCPt =       is 'c'
+centerCPt =
+  manyThen (is 'c') space
 
 -- The compass point "_" specifies that an appropriate side of the port adjacent
 -- to the exterioior of the node should be used, if such exists. Otherwise, the
 -- center is used. If no compass point is used with a portname, the default
 -- value is "_".
 underCPt : Lexer
-underCPt =        is '_'
+underCPt =
+  manyThen (is '_') space
 
 -- (n | ne | e | se | s | sw | w | nw | c | _)
 compassPt : Lexer
-compassPt = northCPt
+compassPt =  northCPt
          <|> northEastCPt
          <|> eastCPt
          <|> southEastCPt
@@ -228,13 +234,13 @@ compassPt = northCPt
 -- "a line beginning with a '#' character is considered a line output from a C
 -- preprocessor and discarded"
 cPreProcessorOutput : Lexer
-cPreProcessorOutput = lineComment (is '#')
+cPreProcessorOutput = manyThen (lineComment (is '#')) space
 
 cppLineComment : Lexer
-cppLineComment = lineComment (exact "//")
+cppLineComment = manyThen (lineComment (exact "//")) space
 
 cppBlockComment : Lexer
-cppBlockComment = blockComment (exact "/*") (exact "*/")
+cppBlockComment = manyThen (blockComment (exact "/*") (exact "*/")) space
 
 
 ||| The language supports C++-style comments `/* */` and `//`. Line starting
@@ -251,39 +257,35 @@ comment =  cppLineComment
 -- standard C convention of a backslash immediately preceding a newline
 -- character
 multilineBackslash : Lexer
-multilineBackslash = (is '\\') <+> newline
+multilineBackslash = manyThen ((is '\\') <+> newline) space
 
 -- double-quoted strings can be concatenated using a '+' operator
 strConcat : Lexer
-strConcat = is '+'
-
--- "any amount of whitespace may be inserted [...]"
-whitespace : Lexer
-whitespace = spaces
+strConcat = manyThen (is '+') space
 
 lBracket : Lexer
-lBracket = is '['
+lBracket = manyThen (is '[') space
 
 rBracket : Lexer
-rBracket = is ']'
+rBracket = manyThen (is ']') space
 
 lBrace : Lexer
-lBrace = is '{'
+lBrace = manyThen (is '{') space
 
 rBrace : Lexer
-rBrace = is '}'
+rBrace = manyThen (is '}') space
 
 comma : Lexer
-comma = is ','
+comma = manyThen (is ',') space
 
 semicolon : Lexer
-semicolon = is ';'
+semicolon = manyThen (is ';') space
 
 colon : Lexer
-colon = is ':'
+colon = manyThen (is ':') space
 
 equal : Lexer
-equal = is '='
+equal = manyThen (is '=') space
 
 
 ---------------
@@ -296,14 +298,13 @@ dotTokenMap = [ (keyword,             \str => Keyword (toLower str))
               , (nameID,              \name => NameID name)
               , (numeralID,           \numeral => NumeralID numeral)
               , (stringID,            \str => StringID str)
-              , (htmlID,              \html => HTML_ID html)
+--              , (htmlID,              \html => HTML_ID html)
               , (digraphEdgeOp,       const DiGrEdgeOp)
               , (graphEdgeOp,         const GrEdgeOp)
               , (compassPt,           \pt  => CompassPt pt)
               , (comment,             \str => Comment str)
               , (multilineBackslash,  const MultilineBackslash)
               , (strConcat,           const StrConcat)
-              , (whitespace,          const Whitespace)
               , (lBracket,            const LBracket)
               , (rBracket,            const RBracket)
               , (lBrace,              const LBrace)
