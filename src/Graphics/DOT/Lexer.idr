@@ -2,6 +2,7 @@ module Graphics.DOT.Lexer
 
 import Text.Lexer
 import Data.String
+import Data.List
 
 %default total
 
@@ -296,7 +297,7 @@ dotTokenMap = [ (keyword,             \str => Keyword (toLower str))
               , (nameID,              \name => NameID name)
               , (numeralID,           \numeral => NumeralID numeral)
               , (stringID,            \str => StringID str)
-              , (htmlID,              \html => HTML_ID html)
+--              , (htmlID,              \html => HTML_ID html)
               , (digraphEdgeOp,       const DiGrEdgeOp)
               , (graphEdgeOp,         const GrEdgeOp)
               , (compassPt,           \pt  => CompassPt pt)
@@ -314,8 +315,19 @@ dotTokenMap = [ (keyword,             \str => Keyword (toLower str))
               , (equal,               const Equal)
               ]
 
+-- comments and whitespace are irrelevant to the program
+relevant : TokenData DOTToken -> Bool
+relevant (MkToken _ _ (Comment _)) = False
+relevant (MkToken _ _ Whitespace)  = False
+relevant _                         = True
+
+-- removes the irrelevant tokens
+clean :  (List (TokenData DOTToken), (Int, (Int, String)))
+      -> (List (TokenData DOTToken), (Int, (Int, String)))
+clean (tokens, inputRemainder) = (filter relevant tokens, inputRemainder)
+
 ||| Given a source file, return the token stream
 export
 lex : String -> (List (TokenData DOTToken), (Int, (Int, String)))
-lex fStr = lex dotTokenMap fStr
+lex fStr = clean $ lex dotTokenMap fStr
 

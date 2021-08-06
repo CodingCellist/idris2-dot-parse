@@ -6,8 +6,8 @@ An Idris2 lexer and parser for
 # TODO-list
 
 - [x] Lexer
-  - [x] whitespace
-  - [x] comments
+  - [x] whitespace (filtered)
+  - [x] comments (filtered)
   - [x] symbols (brackets, braces, separators, and equals)
   - [x] keywords
   - [x] compass points
@@ -28,8 +28,6 @@ An Idris2 lexer and parser for
     - [x] types of identifier
     - [x] edge operators ('--' and '->')
     - [ ] (the other terminals?...)
-  - [ ] "any amount of whitespace may be inserted between the terminals" (from
-        the DOT language reference)
   - [x] identifiers
   - [x] assignment (_ID_ '=' _ID_)
   - [ ] handle string concatenation
@@ -49,7 +47,6 @@ An Idris2 lexer and parser for
   - [x] statements (`stmt`)
   - [x] list of statements (`stmt_list`)
   - [x] **graphs**, the thing at the top of it all
-  - [ ] handle comments
 - [ ] Semantic analysis
 - [ ] Idris DOT representation/reasoning
 - [ ] ... the rest of this todo-list ...
