@@ -3,6 +3,9 @@
 An Idris2 lexer and parser for
 [the DOT language](https://graphviz.org/doc/info/lang.html).
 
+Last testet using Idris2-v0.5.1, commit
+[5c41c818](https://github.com/idris-lang/Idris2/commit/5c41c81883fbc77b59cab4282e2cb6777f934972).
+
 # TODO-list
 
 - [x] Lexer
@@ -30,6 +33,7 @@ An Idris2 lexer and parser for
     - [ ] (the other terminals?...)
   - [x] identifiers
   - [x] assignment (_ID_ '=' _ID_)
+  - [ ] handle multiline strings
   - [ ] handle string concatenation
   - [x] attributes
     - [x] `a_list`

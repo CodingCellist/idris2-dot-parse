@@ -27,7 +27,7 @@ data DOTToken : Type where
   ||| A compass point (used in combination with ports)
   CompassPt : (pt : String) -> DOTToken
   ||| A comment
-  Comment : (contents : String) -> DOTToken
+  Comment : DOTToken
   ||| A multiline indicator
   MultilineBackslash : DOTToken
   ||| A double-quoted-string concatenation operator ('+')
@@ -63,7 +63,7 @@ Show DOTToken where
   show DiGrEdgeOp = "DiEO"
   show GrEdgeOp = "GrEO"
   show (CompassPt pt) = "(CPt " ++ pt ++ ")"
-  show (Comment contents) = "(COM " ++ contents ++ ")"
+  show Comment = "COMMENT"
   show MultilineBackslash = "MLB"
   show StrConcat = "STR++"
   show Whitespace = "WS"
@@ -301,7 +301,7 @@ dotTokenMap = [ (keyword,             \str => Keyword (toLower str))
               , (digraphEdgeOp,       const DiGrEdgeOp)
               , (graphEdgeOp,         const GrEdgeOp)
               , (compassPt,           \pt  => CompassPt pt)
-              , (comment,             \str => Comment str)
+              , (comment,             const Comment)
               , (multilineBackslash,  const MultilineBackslash)
               , (strConcat,           const StrConcat)
               , (whitespace,          const Whitespace)
@@ -316,18 +316,18 @@ dotTokenMap = [ (keyword,             \str => Keyword (toLower str))
               ]
 
 -- comments and whitespace are irrelevant to the program
-relevant : TokenData DOTToken -> Bool
-relevant (MkToken _ _ (Comment _)) = False
-relevant (MkToken _ _ Whitespace)  = False
-relevant _                         = True
+relevant : WithBounds DOTToken -> Bool
+relevant (MkBounded Comment _ _)    = False
+relevant (MkBounded Whitespace _ _) = False
+relevant _                          = True
 
 -- removes the irrelevant tokens
-clean :  (List (TokenData DOTToken), (Int, (Int, String)))
-      -> (List (TokenData DOTToken), (Int, (Int, String)))
+clean :  (List (WithBounds DOTToken), (Int, (Int, String)))
+      -> (List (WithBounds DOTToken), (Int, (Int, String)))
 clean (tokens, inputRemainder) = (filter relevant tokens, inputRemainder)
 
 ||| Given a source file, return the token stream
 export
-lex : String -> (List (TokenData DOTToken), (Int, (Int, String)))
+lex : String -> (List (WithBounds DOTToken), (Int, (Int, String)))
 lex fStr = clean $ lex dotTokenMap fStr
 
