@@ -76,3 +76,48 @@ data DOT : Type where
   UnderCPt : DOT
 
 
+export
+Show DOT where
+  show (Graph strict type id_ stmtList) =
+    "(Gr " ++ show strict ++ show type ++ show id_ ++ show stmtList
+  show (StmtList xs) = show xs
+  show (Stmt stmt) = show stmt
+  show Node = "Node"
+  show Edge = "Edge"
+  show GraphKW = "GrKW"
+  show DiGraph = "DiGr"
+  show SubGraph = "SuGr"
+  show Strict = "Strict"
+  show (NameID name) = "(Name " ++ name ++ ")"
+  show (NumeralID numeral) = "(Nume " ++ numeral ++ ")"
+  show (StringID str) = "(StrI " ++ str ++ ")"
+  show (HTML_ID html) = "(HTML " ++ html ++ ")"
+  show (AList xs) = "(AList:=" ++ show xs ++ ")"
+  show (AttrList xs) = "(AttrList:=" ++ show xs ++ ")"
+  show (AttrStmt kw attrList) = "(AttrStmt " ++ show kw ++ show attrList ++ ")"
+  show (Assign [a, b]) = "(Assign " ++ show a ++ show b ++ ")"
+  show (StrConcat xs) = "(StrConc " ++ show xs ++ ")"
+  show DiGrEdgeOp = "-->"
+  show GrEdgeOp = "---"
+  show (EdgeRHS xs) = "(ERhs " ++ show xs ++ ")"
+  show (EdgeStmt x rhs attrList) =
+    "(EStmt " ++ show x ++ show rhs ++ show attrList ++ ")"
+  show (NodeID id_ port) =
+    "(NodeID " ++ show id_ ++ (case port of Nothing => ""; Just p => ":" ++ show p) ++ ")"
+  show (NodeStmt nID attrList) = "(NodeStmt " ++ show nID ++ show attrList ++ ")"
+  show (IDPort id_ c_pt) =
+    "(IDPort " ++ show id_ ++ (case c_pt of Nothing => ""; Just pt => ":" ++ show pt) ++ ")"
+  show (CPTPort c_pt) = show c_pt
+  show (SubgraphID id_) = show id_
+  show (Subgraph sID stmtList) = "(Subgraph " ++ show sID ++ show stmtList ++ ")"
+  show North = "North"
+  show NorthEast = "NorthEast"
+  show East = "East"
+  show SouthEast = "SouthEast"
+  show South = "South"
+  show SouthWest = "SouthWest"
+  show West = "West"
+  show NorthWest = "NorthWest"
+  show CenterCPt = "Center"
+  show UnderCPt = "_DEF_"
+
