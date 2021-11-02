@@ -1,9 +1,11 @@
 module Graphics.DOT
 
-import Graphics.DOT.AST
+import Data.List
+import Data.List1
+
+import public Graphics.DOT.AST
 import Graphics.DOT.Lexer
 import Graphics.DOT.Parser
-import Data.List1
 
 -- TODO: REMOVE ONCE READY
 import System.File
@@ -39,4 +41,28 @@ parseTest fp =
      putStrLn $ "Remainder: " ++ show rem
 --     putStrLn "----------------\n-- AST --\n----------------\n"
 --     putStrLn $ show ast
+
+||| The types of errors that can occur when processing a DOT/.gv file, combined
+||| with the respective error message.
+public export
+data DOTError : Type where
+   ||| An error occurred when trying to read the file.
+   FError : (errMsg : String) -> DOTError
+   ||| Something's wrong with the structure of the DOT in the file.
+   ParseError : (errMsg : String) -> DOTError
+
+||| Given a file name, open it and lex and parse the DOT in it.
+|||
+||| @ fname the file name to read
+export
+readDOTFile : (fname : String) -> IO (Either DOTError DOT)
+readDOTFile fname =
+   do (Right contents) <- readFile fname
+         | Left err => pure $ Left $ FError (show err)
+      let (tokData, _) = lex contents
+      Right (ast, rem) <- pure $ parse tokData
+         | Left _ => pure $ Left $ ParseError "Couldn't parse token data."
+      if (not . isNil) rem
+         then pure $ Left $ ParseError ("Couldn't parse entire token stream.\nRemainder: " ++ show rem)
+         else pure $ Right ast
 

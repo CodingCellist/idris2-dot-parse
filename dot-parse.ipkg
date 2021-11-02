@@ -1,13 +1,13 @@
 package dot-parse
--- version =
+version = 0.1.0
 authors = "Thomas E. Hansen (CodingCellist)"
 -- maintainers =
 license = "BSD-3-Clause"
 -- brief =
 -- readme =
--- homepage =
--- sourceloc =
--- bugtracker =
+homepage = "https://github.com/CodingCellist/idris2-dot-parse"
+sourceloc = "https://github.com/CodingCellist/idris2-dot-parse"
+bugtracker = "https://github.com/CodingCellist/idris2-dot-parse"
 
 -- packages to add to search path
 -- depends =
