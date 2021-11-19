@@ -77,6 +77,7 @@ data DOT : Type where
 
 
 export
+covering
 Show DOT where
   show (Graph strict type id_ stmtList) =
     "(Gr " ++ show strict ++ show type ++ show id_ ++ show stmtList
