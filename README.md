@@ -3,8 +3,8 @@
 An Idris2 lexer and parser for
 [the DOT language](https://graphviz.org/doc/info/lang.html).
 
-Last testet using Idris2-v0.5.1, commit
-[5c41c818](https://github.com/idris-lang/Idris2/commit/5c41c81883fbc77b59cab4282e2cb6777f934972).
+Last tested using Idris2-v0.5.1, commit
+[c7df4195](https://github.com/idris-lang/Idris2/commit/c7df41958c3651222976140e7dfbf515885ccc1b).
 
 # TODO-list
 
