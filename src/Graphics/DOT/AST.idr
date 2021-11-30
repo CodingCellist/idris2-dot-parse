@@ -28,6 +28,8 @@ data DOT : Type where
   -- Identifiers
   NameID : (name : String) -> DOT
   NumeralID : (numeral : String) -> DOT
+  ||| A string identifier, e.g. from `label="Some string"`
+  ||| /!\ @str includes the quotes around the string! /!\
   StringID : (str : String) -> DOT
   HTML_ID : (html : String) -> DOT
 
