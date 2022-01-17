@@ -4,7 +4,7 @@ An Idris2 lexer and parser for
 [the DOT language](https://graphviz.org/doc/info/lang.html).
 
 Last tested using Idris2-v0.5.1, commit
-[5c5b3a2a](https://github.com/idris-lang/Idris2/commit/5c5b3a2ae7daa4f35737955c39807c82ef741f59).
+[0d582820](https://github.com/idris-lang/Idris2/commit/0d58282087a8dce89a036e31e192af13b9199850).
 
 # TODO-list
 
