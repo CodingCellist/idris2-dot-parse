@@ -10,7 +10,7 @@ sourceloc = "https://github.com/CodingCellist/idris2-dot-parse"
 bugtracker = "https://github.com/CodingCellist/idris2-dot-parse"
 
 -- packages to add to search path
--- depends =
+depends = contrib
 
 -- modules to install
 modules = Graphics.DOT.Lexer
@@ -23,7 +23,7 @@ main = Graphics.DOT
 
 -- name of executable
 -- executable =
-opts = "-p contrib"
+-- opts =
 sourcedir = "src"
 -- builddir =
 -- outputdir =

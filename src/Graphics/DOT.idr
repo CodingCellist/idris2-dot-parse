@@ -55,7 +55,7 @@ data DOTError : Type where
 |||
 ||| @ fname the file name to read
 export
-readDOTFile : (fname : String) -> IO (Either DOTError DOT)
+readDOTFile : HasIO io => (fname : String) -> io (Either DOTError DOT)
 readDOTFile fname =
    do (Right contents) <- readFile fname
          | Left err => pure $ Left $ FError (show err)
