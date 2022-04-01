@@ -1,5 +1,5 @@
 package dot-parse
-version = 0.1.0
+version = 0.1.1
 authors = "Thomas E. Hansen (CodingCellist)"
 -- maintainers =
 license = "BSD-3-Clause"

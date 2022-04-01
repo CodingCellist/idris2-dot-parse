@@ -51,6 +51,11 @@ data DOTError : Type where
    ||| Something's wrong with the structure of the DOT in the file.
    ParseError : (errMsg : String) -> DOTError
 
+public export
+Show DOTError where
+   show (FError errMsg) = "FILE ERR: " ++ errMsg
+   show (ParseError errMsg) = "PARSE ERR: " ++ errMsg
+
 ||| Given a file name, open it and lex and parse the DOT in it.
 |||
 ||| @ fname the file name to read
