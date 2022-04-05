@@ -77,6 +77,11 @@ data DOT : Type where
   CenterCPt : DOT
   UnderCPt : DOT
 
+||| The type `a` can be converted to a DOT/graphviz AST.
+public export
+interface DOTAble a where
+  ||| Convert `a` to its `DOT` representation.
+  toDOT : a -> DOT
 
 export
 covering
