@@ -2,6 +2,8 @@ module Graphics.DOT.SemIR
 
 import Data.List1
 
+%default total
+
 ||| The various compass points that can be used in DOT
 public export
 data CompassPoint
@@ -32,7 +34,7 @@ data DOTID : Type where
   StringID : (id_ : String) -> DOTID
   NameID   : (name : String) -> DOTID
   Numeral  : (num : String) -> DOTID
-  HTML     : (html : String) -> DOTID
+  HTML     : (htmlStr : String) -> DOTID
 
 ||| A DOT port
 public export
@@ -76,7 +78,7 @@ mutual
   public export
   data Subgraph : Type where
     MkSubgraph :  (Maybe (Keyword, Maybe DOTID))
-               -> List Stmt
+               -> (stmtList : List Stmt)
                -> Subgraph
 
   ||| A DOT statement
@@ -96,9 +98,9 @@ mutual
              -> (attrList : List (List Assign))
              -> Stmt
 
-    AssignStmt : Assign -> Stmt
+    AssignStmt : (a : Assign) -> Stmt
 
-  SubgraphStmt : Subgraph -> Stmt
+    SubgraphStmt : (subGr : Subgraph) -> Stmt
 
 ||| A DOT graph. This is the top-level IR node
 public export
