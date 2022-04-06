@@ -7,6 +7,10 @@ import public Graphics.DOT.AST
 import Graphics.DOT.Lexer
 import Graphics.DOT.Parser
 
+import Graphics.DOT.SemIR
+import Graphics.DOT.Interfaces
+import Graphics.DOT.Parser2
+
 -- TODO: REMOVE ONCE READY
 import System.File
 import Text.Lexer.Core
@@ -22,21 +26,29 @@ lexTest fp =
      putStrLn "----------------\n-- TOKEN LIST --\n----------------\n"
      putStrLn $ show tokList
 
+showParsingError : ParsingError _ -> String
+showParsingError (Error e _) = e
+
+showParsingError' : ParsingError _ -> String
+showParsingError' (Error e Nothing) = e
+showParsingError' (Error e (Just (MkBounds startLine startCol endLine endCol))) =
+   e ++ " @ L\{show startLine}:\{show startCol}-L\{show endLine}:\{show endCol}"
+
 parseTest : String -> IO ()
 parseTest fp =
   do (Right contents) <- readFile fp
        | Left err => putStrLn $ "FILE ERROR: " ++ show err
      let (tokData, _) = lex contents
-     let pRes = parse tokData
+     let pRes = Parser2.parse tokData
      putStrLn $
         the String $
             case pRes of
                  Left errs =>
-                     "PARSER ERROR: " -- ++ (show errs) -- ++ "\n\t" ++ show ts
+                     "PARSER ERROR: " ++ (show $ map showParsingError' errs) -- ++ (show errs) -- ++ "\n\t" ++ show ts
                  Right (ast, rem) =>
                      show ast ++ "\n\tREM: " ++ show rem
-     Right (ast, rem) <- pure $ parse tokData
-        | Left errs => do putStrLn $ "PARSER ERROR: " -- ++ (show errs)
+     Right (ast, rem) <- pure $ Parser2.parse tokData
+        | Left errs => do putStrLn $ "PARSER ERROR: " ++ (show $ map showParsingError errs)
                           -- putStrLn $ "\t" ++ show ts
      putStrLn $ "Remainder: " ++ show rem
 --     putStrLn "----------------\n-- AST --\n----------------\n"
@@ -65,7 +77,7 @@ readDOTFile fname =
    do (Right contents) <- readFile fname
          | Left err => pure $ Left $ FError (show err)
       let (tokData, _) = lex contents
-      Right (ast, rem) <- pure $ parse tokData
+      Right (ast, rem) <- pure $ Parser.parse tokData
          | Left _ => pure $ Left $ ParseError "Couldn't parse token data."
       if (not . isNil) rem
          then pure $ Left $ ParseError ("Couldn't parse entire token stream.\nRemainder: " ++ show rem)

@@ -1,6 +1,6 @@
-module Graphics.DOT.SemIR.Interfaces
+module Graphics.DOT.Interfaces
 
-import Graphics.DOT
+import Graphics.DOT.AST
 import Graphics.DOT.SemIR
 
 import Data.Vect

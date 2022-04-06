@@ -69,6 +69,7 @@ data EdgeOp : Type where
 
 mutual
   ||| The right hand side (RHS) of an edge op
+  public export
   data EdgeRHS : Type where
     MkEdgeRHS :  (op : EdgeOp)
               -> Either NodeID Subgraph
