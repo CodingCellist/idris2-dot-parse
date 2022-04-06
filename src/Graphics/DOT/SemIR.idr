@@ -50,7 +50,7 @@ data Port : Type where
 ||| A node identifier (separate from regular identifiers, for some reason)
 public export
 data NodeID : Type where
-  MkNodeID : (id_ : DOTID) -> (port : Maybe Port) -> NodeID
+  MkNodeID : (id_ : DOTID) -> (mPort : Maybe Port) -> NodeID
 
 ||| Assignment
 |||   id '=' id
@@ -77,7 +77,7 @@ mutual
   ||| A subgraph
   public export
   data Subgraph : Type where
-    MkSubgraph :  (Maybe (Keyword, Maybe DOTID))
+    MkSubgraph :  Maybe (Keyword, Maybe DOTID)
                -> (stmtList : List Stmt)
                -> Subgraph
 
@@ -109,7 +109,7 @@ data Graph : Type where
   --       (e.g. Graph, Digraph, StrictGraph, etc.)?
   MkGraph :  (strict : Maybe Keyword)
           -> (graphTy : Keyword)
-          -> (id_ : Maybe DOTID)
+          -> (mID_ : Maybe DOTID)
           -> (stmtList : List Stmt)
           -> Graph
 

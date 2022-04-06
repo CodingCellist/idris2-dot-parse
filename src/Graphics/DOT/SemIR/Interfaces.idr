@@ -1,9 +1,11 @@
 module Graphics.DOT.SemIR.Interfaces
 
+import Graphics.DOT
 import Graphics.DOT.SemIR
 
-import Data.String
+import Data.Vect
 import Data.List1
+import Data.String
 
 %default total
 
@@ -133,4 +135,122 @@ Show Graph where
     ++ "\n{"
     ++ showStmtList stmtList
     ++ "\n}"
+
+
+-------------
+-- DOTAble --
+-------------
+
+public export
+DOTAble CompassPoint where
+  toDOT N = North
+  toDOT NE = NorthEast
+  toDOT E = East
+  toDOT SE = SouthEast
+  toDOT S = South
+  toDOT SW = SouthWest
+  toDOT W = West
+  toDOT NW = NorthWest
+  toDOT Center = CenterCPt
+  toDOT Underscore = UnderCPt
+
+public export
+DOTAble Keyword where
+  toDOT StrictKW = Strict
+  toDOT GraphKW = GraphKW
+  toDOT DigraphKW = DiGraph
+  toDOT NodeKW = Node
+  toDOT EdgeKW = Edge
+  toDOT SubgraphKW = SubGraph
+
+public export
+DOTAble DOTID where
+  toDOT (StringID id_) = StringID id_
+  toDOT (NameID name) = NameID name
+  toDOT (Numeral num) = NumeralID num
+  toDOT (HTML htmlStr) = HTML_ID htmlStr
+
+public export
+DOTAble Port where
+  toDOT (IDPort id_ mCPt) = IDPort (toDOT id_) (toDOT <$> mCPt)
+  toDOT (PlainPort cpt) = CPTPort (toDOT cpt)
+
+public export
+DOTAble NodeID where
+  toDOT (MkNodeID id_ mPort) = NodeID (toDOT id_) (toDOT <$> mPort)
+
+public export
+DOTAble Assign where
+  toDOT (MkAssign lhs rhs) = Assign (map toDOT [lhs, rhs])
+
+public export
+DOTAble EdgeOp where
+  toDOT Arrow = DiGrEdgeOp
+  toDOT Dash = GrEdgeOp
+
+mutual
+  covering
+  toAList : List Assign -> DOT
+  toAList as = AList $ map toDOT as
+
+  public export
+  covering
+  DOTAble EdgeRHS where
+    toDOT (MkEdgeRHS op (Left id_)) = EdgeRHS [toDOT op, toDOT id_]
+    toDOT (MkEdgeRHS op (Right subgr)) = EdgeRHS [toDOT op, toDOT subgr]
+
+  public export
+  covering
+  DOTAble Subgraph where
+    toDOT (MkSubgraph Nothing stmtList) =
+      Subgraph Nothing (StmtList $ map toDOT stmtList)
+
+    -- `DOT.AST` doesn't store the keyword, but uses `SubgraphID` to denote
+    -- whether the 'subgraph' keyword was present in the .gv file...
+    toDOT (MkSubgraph (Just (kw, Nothing)) stmtList) =
+      Subgraph (Just $ SubgraphID Nothing) (StmtList $ map toDOT stmtList)
+    toDOT (MkSubgraph (Just (kw, (Just id_))) stmtList) =
+      let sID = SubgraphID $ Just (toDOT id_)
+      in Subgraph (Just sID) (StmtList $ map toDOT stmtList)
+
+  public export
+  covering
+  DOTAble Stmt where
+    toDOT (NodeStmt nodeID []) =
+      Stmt $ NodeStmt (toDOT nodeID) Nothing
+    toDOT (NodeStmt nodeID attrList) =
+      Stmt $ NodeStmt (toDOT nodeID) (Just $ AttrList $ map toAList attrList)
+
+    -- IR stores rhs as a `List1`
+    toDOT (EdgeStmt (Left id_) rhs []) =
+      let dotRHS = toList $ map toDOT rhs
+      in Stmt $ EdgeStmt (toDOT id_) (EdgeRHS dotRHS) Nothing
+    toDOT (EdgeStmt (Left id_) rhs attrList) =
+      let dotRHS = toList $ map toDOT rhs
+          dotAList = map toAList attrList
+      in Stmt $ EdgeStmt (toDOT id_) (EdgeRHS dotRHS) (Just $ AttrList dotAList)
+    toDOT (EdgeStmt (Right subgr) rhs []) =
+      let dotRHS = toList $ map toDOT rhs
+      in Stmt $ EdgeStmt (toDOT subgr) (EdgeRHS dotRHS) Nothing
+    toDOT (EdgeStmt (Right subgr) rhs attrList) =
+      let dotRHS = toList $ map toDOT rhs
+          dotAList = map toAList attrList
+      in Stmt $ EdgeStmt (toDOT subgr) (EdgeRHS dotRHS) (Just $ AttrList dotAList)
+
+    toDOT (AttrStmt kw attrList) =
+      Stmt $ AttrStmt (toDOT kw) (AttrList $ map toAList attrList)
+
+    toDOT (AssignStmt a) =
+      Stmt $ toDOT a
+
+    toDOT (SubgraphStmt subGr) =
+      Stmt $ toDOT subGr
+
+public export
+covering
+DOTAble Graph where
+  toDOT (MkGraph Nothing graphTy mID_ stmtList) =
+    Graph False (toDOT graphTy) (toDOT <$> mID_) (StmtList $ map toDOT stmtList)
+  toDOT (MkGraph (Just kw) graphTy mID_ stmtList) =
+    Graph True (toDOT graphTy) (toDOT <$> mID_) (StmtList $ map toDOT stmtList)
 
