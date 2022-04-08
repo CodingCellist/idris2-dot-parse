@@ -9,6 +9,82 @@ import Data.String
 
 %default total
 
+
+--------------------------------------------------------------------------------
+-- INTERFACES FOR CONVERTING TO DOT
+--------------------------------------------------------------------------------
+
+namespace DCPT
+  ||| The type `t` can be converted to a `CompassPoint`.
+  public export
+  interface DOTCompassPoint t where
+    convert : t -> CompassPoint
+
+namespace DKW
+  ||| The type `t` can be converted to a `Keyword`.
+  public export
+  interface DOTKeyword t where
+    convert : t -> Keyword
+
+namespace DDID
+  ||| The type `t` can be converted to a `DOTID`.
+  public export
+  interface DOTDOTID t where
+    convert : t -> DOTID
+
+namespace DPORT
+  ||| The type `t` can be converted to a `Port`.
+  public export
+  interface DOTPort t where
+    convert : t -> Port
+
+namespace DNID
+  ||| The type `t` can be converted to a `NodeID`.
+  public export
+  interface DOTNodeID t where
+    convert : t -> NodeID
+
+namespace DAssign
+  ||| The type `t` can be converted to an `Assign`.
+  public export
+  interface DOTAssign t where
+    convert : t -> Assign
+
+namespace DEOP
+  ||| The type `t` can be converted to an `EdgeOp`.
+  public export
+  interface DOTEdgeOp t where
+    convert : t -> EdgeOp
+
+namespace DERHS
+  ||| The type `t` can be converted to an `EdgeRHS`.
+  public export
+  interface DOTEdgeRHS t where
+    convert : t -> EdgeRHS
+
+namespace DSUBGR
+  ||| The type `t` can be converted to a `Subgraph`.
+  public export
+  interface DOTSubgraph t where
+    convert : t -> Subgraph
+
+namespace DSTMT
+  ||| The type `t` can be converted to a `Stmt`.
+  public export
+  interface DOTStmt t where
+    convert : t -> Stmt
+
+namespace DGR
+  ||| The type `t` can be converted to a `Graph`.
+  public export
+  interface DOTGraph t where
+    convert : t -> Graph
+
+
+--------------------------------------------------------------------------------
+-- GENERAL IMPLEMENTATIONS
+--------------------------------------------------------------------------------
+
 ----------
 -- SHOW --
 ----------
