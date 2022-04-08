@@ -1,7 +1,7 @@
 module Graphics.DOT.Interfaces
 
 import Graphics.DOT.AST
-import Graphics.DOT.SemIR
+import Graphics.DOT.ASTv2
 
 import Data.Vect
 import Data.List1

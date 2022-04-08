@@ -7,7 +7,7 @@ import Data.List1
 import Data.String
 
 import Graphics.DOT.Lexer
-import Graphics.DOT.SemIR
+import Graphics.DOT.ASTv2
 
 %default total
 

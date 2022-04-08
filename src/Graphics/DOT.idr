@@ -4,17 +4,24 @@ import Data.List
 import Data.List1
 
 import public Graphics.DOT.AST
+import public Graphics.DOT.ASTv2
 import Graphics.DOT.Lexer
-import Graphics.DOT.Parser
-
-import Graphics.DOT.SemIR
+import public Graphics.DOT.Parser
+import public Graphics.DOT.Parser2
 import Graphics.DOT.Interfaces
-import Graphics.DOT.Parser2
 
 -- TODO: REMOVE ONCE READY
 import System.File
 import Text.Lexer.Core
 import Text.Parser.Core
+
+public export
+Show a => Show (ParsingError a) where
+  show (Error s Nothing) = "PARSING ERROR: " ++ s
+  show (Error s (Just (MkBounds startLine startCol endLine endCol))) =
+    "PARSING ERROR: "
+    ++ s
+    ++ " @ L\{show startLine}:\{show startCol}-L\{show endLine}:\{show endCol}"
 
 lexTest : String -> IO ()
 lexTest fp =
@@ -26,14 +33,6 @@ lexTest fp =
      putStrLn "----------------\n-- TOKEN LIST --\n----------------\n"
      putStrLn $ show tokList
 
-showParsingError : ParsingError _ -> String
-showParsingError (Error e _) = e
-
-showParsingError' : ParsingError _ -> String
-showParsingError' (Error e Nothing) = e
-showParsingError' (Error e (Just (MkBounds startLine startCol endLine endCol))) =
-   e ++ " @ L\{show startLine}:\{show startCol}-L\{show endLine}:\{show endCol}"
-
 parseTest : String -> IO ()
 parseTest fp =
   do (Right contents) <- readFile fp
@@ -43,16 +42,12 @@ parseTest fp =
      putStrLn $
         the String $
             case pRes of
-                 Left errs =>
-                     "PARSER ERROR: " ++ (show $ map showParsingError' errs) -- ++ (show errs) -- ++ "\n\t" ++ show ts
+                 Left errs => show $ map show errs
                  Right (ast, rem) =>
                      show ast ++ "\n\tREM: " ++ show rem
      Right (ast, rem) <- pure $ Parser2.parse tokData
-        | Left errs => do putStrLn $ "PARSER ERROR: " ++ (show $ map showParsingError errs)
-                          -- putStrLn $ "\t" ++ show ts
+        | Left errs => do putStrLn (show $ map show errs)
      putStrLn $ "Remainder: " ++ show rem
---     putStrLn "----------------\n-- AST --\n----------------\n"
---     putStrLn $ show ast
 
 ||| The types of errors that can occur when processing a DOT/.gv file, combined
 ||| with the respective error message.

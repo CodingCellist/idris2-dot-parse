@@ -1,4 +1,4 @@
-module Graphics.DOT.SemIR
+module Graphics.DOT.ASTv2
 
 import Data.List1
 
