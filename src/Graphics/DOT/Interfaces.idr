@@ -119,20 +119,20 @@ public export
 covering
 Show Graph where
   show (MkGraph Nothing graphTy Nothing stmtList) =
-    show graphTy ++ "\n{" ++ showStmtList stmtList ++ "\n}"
+    show graphTy ++ " {\n" ++ showStmtList stmtList ++ "\n}"
 
   show (MkGraph Nothing graphTy (Just id_) stmtList) =
-    show graphTy ++ " " ++ show id_ ++ "\n{" ++ showStmtList stmtList ++ "\n}"
+    show graphTy ++ " " ++ show id_ ++ " {\n" ++ showStmtList stmtList ++ "\n}"
 
   show (MkGraph (Just strict) graphTy Nothing stmtList) =
     show strict ++ " " ++ show graphTy
-    ++ "\n{"
+    ++ " {\n"
     ++ showStmtList stmtList
     ++ "\n}"
 
   show (MkGraph (Just strict) graphTy (Just id_) stmtList) =
     show strict ++ " " ++ show graphTy ++ " " ++ show id_
-    ++ "\n{"
+    ++ " {\n"
     ++ showStmtList stmtList
     ++ "\n}"
 
