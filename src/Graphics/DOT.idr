@@ -60,21 +60,38 @@ data DOTError : Type where
 
 public export
 Show DOTError where
-   show (FError errMsg) = "FILE ERR: " ++ errMsg
-   show (ParseError errMsg) = "PARSE ERR: " ++ errMsg
+   show (FError errMsg) = "DOTERROR from file: " ++ errMsg
+   show (ParseError errMsg) = "DOTERROR when parsing: " ++ errMsg
 
-||| Given a file name, open it and lex and parse the DOT in it.
+||| Given a file name, open it and lex and parse the DOT in it, returning the
+||| deprecated AST `DOT`.
 |||
 ||| @ fname the file name to read
 export
 readDOTFile : HasIO io => (fname : String) -> io (Either DOTError DOT)
 readDOTFile fname =
-   do (Right contents) <- readFile fname
-         | Left err => pure $ Left $ FError (show err)
-      let (tokData, _) = lex contents
-      Right (ast, rem) <- pure $ Parser.parse tokData
-         | Left _ => pure $ Left $ ParseError "Couldn't parse token data."
-      if (not . isNil) rem
-         then pure $ Left $ ParseError ("Couldn't parse entire token stream.\nRemainder: " ++ show rem)
-         else pure $ Right ast
+  do (Right contents) <- readFile fname
+        | Left err => pure $ Left $ FError (show err)
+     let (tokData, _) = lex contents
+     Right (ast, rem) <- pure $ Parser.parse tokData
+        | Left _ => pure $ Left $ ParseError "Couldn't parse token data."
+     if (not . isNil) rem
+        then pure $ Left $ ParseError ("Couldn't parse entire token stream.\nRemainder: " ++ show rem)
+        else pure $ Right ast
+
+||| Given a file name, open it and lex and parse the DOT in it, returning the
+||| new AST `Graph` (and its internals).
+|||
+||| @ fname the file name to read
+export
+readDOTFileV2 : HasIO io => (fname : String) -> io (Either DOTError Graph)
+readDOTFileV2 fname =
+  do (Right contents) <- readFile fname
+        | Left err => pure $ (Left . FError) $ show err
+     let (tokData, _) = lex contents
+     Right (ast, rem) <- pure $ Parser2.parse tokData
+        | Left pErrs => pure $ (Left . ParseError) $ show (map show pErrs)
+     if (not . isNil) rem
+        then pure $ (Left . ParseError) $ "Non-empty token remainder:\n\t\{show rem}"
+        else pure $ Right ast
 
