@@ -1,13 +1,11 @@
 [ { "name": "dot-parse"
-  , "version": "0.1.5"
+  , "version": "0.2.0"
   , "license": "BSD-3-Clause"
   , "authors": "Thomas E. Hansen (CodingCellist)"
   , "modules": [ "Graphics.DOT.Lexer"
-               , "Graphics.DOT.Parser"
                , "Graphics.DOT.AST"
-               , "Graphics.DOT.ASTv2"
                , "Graphics.DOT.Interfaces"
-               , "Graphics.DOT.Parser2"
+               , "Graphics.DOT.Parser"
                , "Graphics.DOT"
                ]
   , "deps": [ { "name": "contrib", "legacy": true } ]
