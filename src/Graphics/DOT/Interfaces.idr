@@ -14,57 +14,57 @@ import Data.String
 --------------------------------------------------------------------------------
 
 ||| The type `t` can be converted to a `CompassPoint`.
-public export
+export
 interface DOTCompassPoint t where
   toCompassPoint : t -> CompassPoint
 
 ||| The type `t` can be converted to a `Keyword`.
-public export
+export
 interface DOTKeyword t where
   toKeyword : t -> Keyword
 
 ||| The type `t` can be converted to a `DOTID`.
-public export
+export
 interface DOTDOTID t where
   toDOTID : t -> DOTID
 
 ||| The type `t` can be converted to a `Port`.
-public export
+export
 interface DOTPort t where
   toPort : t -> Port
 
 ||| The type `t` can be converted to a `NodeID`.
-public export
+export
 interface DOTNodeID t where
   toNodeID : t -> NodeID
 
 ||| The type `t` can be converted to an `Assign`.
-public export
+export
 interface DOTAssign t where
   toAssign : t -> Assign
 
 ||| The type `t` can be converted to an `EdgeOp`.
-public export
+export
 interface DOTEdgeOp t where
   toEdgeOp : t -> EdgeOp
 
 ||| The type `t` can be converted to an `EdgeRHS`.
-public export
+export
 interface DOTEdgeRHS t where
   toEdgeRHS : t -> EdgeRHS
 
 ||| The type `t` can be converted to a `Subgraph`.
-public export
+export
 interface DOTSubgraph t where
   toSubgraph : t -> Subgraph
 
 ||| The type `t` can be converted to a `Stmt`.
-public export
+export
 interface DOTStmt t where
   toStmt : t -> Stmt
 
 ||| The type `t` can be converted to a `Graph`.
-public export
+export
 interface DOTGraph t where
   toGraph : t -> Graph
 
@@ -77,7 +77,7 @@ interface DOTGraph t where
 -- SHOW --
 ----------
 
-public export
+export
 Show CompassPoint where
   show N = "n"
   show NE = "ne"
@@ -90,7 +90,7 @@ Show CompassPoint where
   show Center = "c"
   show Underscore = "_"
 
-public export
+export
 Show Keyword where
   show StrictKW = "strict"
   show GraphKW = "graph"
@@ -99,29 +99,29 @@ Show Keyword where
   show EdgeKW = "edge"
   show SubgraphKW = "subgraph"
 
-public export
+export
 Show DOTID where
   show (StringID id_) = show id_    -- `show` puts " around id_
   show (NameID name) = name
   show (Numeral num) = num
   show (HTML htmlStr) = htmlStr
 
-public export
+export
 Show Port where
   show (IDPort id_ Nothing) = ":" ++ show id_
   show (IDPort id_ (Just cpt)) = ":" ++ show id_ ++ ":" ++ show cpt
   show (PlainPort cpt) = ":" ++ show cpt
 
-public export
+export
 Show NodeID where
   show (MkNodeID id_ Nothing) = show id_
   show (MkNodeID id_ (Just port)) = show id_ ++ show port
 
-public export
+export
 Show Assign where
   show (MkAssign lhs rhs) = show lhs ++ "=" ++ show rhs
 
-public export
+export
 Show EdgeOp where
   show Arrow = "->"
   show Dash  = "--"
@@ -141,13 +141,13 @@ mutual
   showAttrList : List (List Assign) -> String
   showAttrList = concatMap show
 
-  public export
+  export
   covering
   Show EdgeRHS where
     show (MkEdgeRHS op (Left id_)) = show op ++ " " ++ show id_
     show (MkEdgeRHS op (Right subGr)) = show op ++ " " ++ show subGr
 
-  public export
+  export
   covering
   Show Subgraph where
     show (MkSubgraph Nothing stmtList) =
@@ -159,7 +159,7 @@ mutual
     show (MkSubgraph (Just (kw, (Just id_))) stmtList) =
       show kw ++ " " ++ show id_ ++ " { " ++ showStmtList stmtList ++ " }"
 
-  public export
+  export
   covering
   Show Stmt where
     show (NodeStmt nodeID attrList) =
@@ -179,7 +179,7 @@ mutual
     show (SubgraphStmt subGr) =
       show subGr
 
-public export
+export
 covering
 Show Graph where
   show (MkGraph Nothing graphTy Nothing stmtList) =
@@ -204,7 +204,7 @@ Show Graph where
 -- EQ --
 --------
 
-public export
+export
 Eq CompassPoint where
   (==) N  N  = True
   (==) NE NE = True
@@ -218,7 +218,7 @@ Eq CompassPoint where
   (==) Underscore Underscore = True
   (==) _  _  = False
 
-public export
+export
 Eq Keyword where
   (==) StrictKW   StrictKW   = True
   (==) GraphKW    GraphKW    = True
@@ -228,7 +228,7 @@ Eq Keyword where
   (==) SubgraphKW SubgraphKW = True
   (==) _          _          = False
 
-public export
+export
 Eq DOTID where
   (==) (StringID id1) (StringID id2) = id1 == id2
   (==) (NameID n1)    (NameID n2)    = n1 == n2
@@ -236,39 +236,39 @@ Eq DOTID where
   (==) (HTML html1)   (HTML html2)   = html1 == html2
   (==) _              _              = False
 
-public export
+export
 Eq Port where
   (==) (IDPort id1 mCPT1) (IDPort id2 mCPT2) = mCPT1 == mCPT2 && id1 == id2 
   (==) (PlainPort cpt1)   (PlainPort cpt2)   = cpt1 == cpt2
   (==) _                  _                  = False
 
-public export
+export
 Eq NodeID where
   (==) (MkNodeID id1 mPort1) (MkNodeID id2 mPort2) = mPort1 == mPort2 && id1 == id2 
 
-public export
+export
 Eq Assign where
   (==) (MkAssign lhs1 rhs1) (MkAssign lhs2 rhs2) = lhs1 == lhs2 && rhs1 == rhs2
 
-public export
+export
 Eq EdgeOp where
   (==) Arrow Arrow = True
   (==) Dash  Dash  = True
   (==) _     _     = False
 
 mutual
-  public export
+  export
   covering
   Eq EdgeRHS where
     (==) (MkEdgeRHS op1 s1) (MkEdgeRHS op2 s2) = op1 == op2 && s1 == s2
 
-  public export
+  export
   covering
   Eq Subgraph where
     (==) (MkSubgraph mSubGrID1 stmtList1) (MkSubgraph mSubGrID2 stmtList2) =
       mSubGrID1 == mSubGrID2 && stmtList1 == stmtList2
 
-  public export
+  export
   covering
   Eq Stmt where
     (==) (NodeStmt nodeID1 attrList1) (NodeStmt nodeID2 attrList2) =
@@ -289,7 +289,7 @@ mutual
     (==) _ _ =
       False
 
-public export
+export
 covering
 Eq Graph where
   (==) (MkGraph s1 grTy1 mID1 stmtList1) (MkGraph s2 grTy2 mID2 stmtList2) =
