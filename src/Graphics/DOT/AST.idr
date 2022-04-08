@@ -1,4 +1,4 @@
-module Graphics.DOT.ASTv2
+module Graphics.DOT.AST
 
 import Data.List1
 

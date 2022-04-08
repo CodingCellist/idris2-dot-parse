@@ -1,4 +1,4 @@
-module Graphics.DOT.Parser2
+module Graphics.DOT.Parser
 
 import Text.Parser
 
@@ -7,7 +7,7 @@ import Data.List1
 import Data.String
 
 import Graphics.DOT.Lexer
-import Graphics.DOT.ASTv2
+import Graphics.DOT.AST
 
 %default total
 
