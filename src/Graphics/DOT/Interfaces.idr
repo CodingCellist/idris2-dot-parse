@@ -200,3 +200,98 @@ Show Graph where
     ++ showStmtList stmtList
     ++ "\n}"
 
+--------
+-- EQ --
+--------
+
+public export
+Eq CompassPoint where
+  (==) N  N  = True
+  (==) NE NE = True
+  (==) E  E  = True
+  (==) SE SE = True
+  (==) S  S  = True
+  (==) SW SW = True
+  (==) W  W  = True
+  (==) NW NW = True
+  (==) Center Center = True
+  (==) Underscore Underscore = True
+  (==) _  _  = False
+
+public export
+Eq Keyword where
+  (==) StrictKW   StrictKW   = True
+  (==) GraphKW    GraphKW    = True
+  (==) DigraphKW  DigraphKW  = True
+  (==) NodeKW     NodeKW     = True
+  (==) EdgeKW     EdgeKW     = True
+  (==) SubgraphKW SubgraphKW = True
+  (==) _          _          = False
+
+public export
+Eq DOTID where
+  (==) (StringID id1) (StringID id2) = id1 == id2
+  (==) (NameID n1)    (NameID n2)    = n1 == n2
+  (==) (Numeral num1) (Numeral num2) = num1 == num2
+  (==) (HTML html1)   (HTML html2)   = html1 == html2
+  (==) _              _              = False
+
+public export
+Eq Port where
+  (==) (IDPort id1 mCPT1) (IDPort id2 mCPT2) = mCPT1 == mCPT2 && id1 == id2 
+  (==) (PlainPort cpt1)   (PlainPort cpt2)   = cpt1 == cpt2
+  (==) _                  _                  = False
+
+public export
+Eq NodeID where
+  (==) (MkNodeID id1 mPort1) (MkNodeID id2 mPort2) = mPort1 == mPort2 && id1 == id2 
+
+public export
+Eq Assign where
+  (==) (MkAssign lhs1 rhs1) (MkAssign lhs2 rhs2) = lhs1 == lhs2 && rhs1 == rhs2
+
+public export
+Eq EdgeOp where
+  (==) Arrow Arrow = True
+  (==) Dash  Dash  = True
+  (==) _     _     = False
+
+mutual
+  public export
+  covering
+  Eq EdgeRHS where
+    (==) (MkEdgeRHS op1 s1) (MkEdgeRHS op2 s2) = op1 == op2 && s1 == s2
+
+  public export
+  covering
+  Eq Subgraph where
+    (==) (MkSubgraph mSubGrID1 stmtList1) (MkSubgraph mSubGrID2 stmtList2) =
+      mSubGrID1 == mSubGrID2 && stmtList1 == stmtList2
+
+  public export
+  covering
+  Eq Stmt where
+    (==) (NodeStmt nodeID1 attrList1) (NodeStmt nodeID2 attrList2) =
+      nodeID1 == nodeID2 && attrList1 == attrList2
+
+    (==) (EdgeStmt e1 rhs1 attrList1) (EdgeStmt e2 rhs2 attrList2) =
+      e1 == e2 && rhs1 == rhs2 && attrList1 == attrList2
+
+    (==) (AttrStmt kw1 attrList1) (AttrStmt kw2 attrList2) =
+      kw1 == kw2 && attrList1 == attrList2
+
+    (==) (AssignStmt a1) (AssignStmt a2) =
+      a1 == a2
+
+    (==) (SubgraphStmt subGr1) (SubgraphStmt subGr2) =
+      subGr1 == subGr2
+
+    (==) _ _ =
+      False
+
+public export
+covering
+Eq Graph where
+  (==) (MkGraph s1 grTy1 mID1 stmtList1) (MkGraph s2 grTy2 mID2 stmtList2) =
+    s1 == s2 && grTy1 == grTy2 && mID1 == mID2 && stmtList1 == stmtList2
+
