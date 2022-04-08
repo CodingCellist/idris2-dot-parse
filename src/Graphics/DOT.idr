@@ -3,12 +3,14 @@ module Graphics.DOT
 import Data.List
 import Data.List1
 
-import public Graphics.DOT.AST
-import public Graphics.DOT.ASTv2
 import Graphics.DOT.Lexer
+
+import public Graphics.DOT.AST
 import public Graphics.DOT.Parser
+
+import public Graphics.DOT.ASTv2
 import public Graphics.DOT.Parser2
-import Graphics.DOT.Interfaces
+import public Graphics.DOT.Interfaces
 
 -- TODO: REMOVE ONCE READY
 import System.File
