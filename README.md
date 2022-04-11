@@ -4,7 +4,7 @@ An Idris2 lexer and parser for
 [the DOT language](https://graphviz.org/doc/info/lang.html).
 
 Last tested using Idris2-v0.5.1, commit
-[0d582820](https://github.com/idris-lang/Idris2/commit/0d58282087a8dce89a036e31e192af13b9199850).
+[f5400537](https://github.com/idris-lang/Idris2/commit/f5400537bd133351ec831a46ececcf565ca1143f).
 
 # TODO-list
 
@@ -53,6 +53,10 @@ Last tested using Idris2-v0.5.1, commit
   - [x] **graphs**, the thing at the top of it all
 - [ ] Semantic analysis
 - [ ] Idris DOT representation/reasoning
+  - [x] datatypes for constructing DOT graphs mostly correctly
+  - [ ] utility functions (e.g. `addEdge` and similar)
+  - [ ] provable properties about the DOT graphs
+  - [ ] correct-by-construction DOT graphs
 - [ ] ... the rest of this todo-list ...
 
 # LICENSE

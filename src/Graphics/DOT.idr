@@ -27,18 +27,10 @@ data DOTError : Type where
    ||| Something's wrong with the structure of the DOT in the file.
    ParseError : (errMsg : String) -> DOTError
 
-public export
+export
 Show DOTError where
    show (FError errMsg) = "DOTERROR from file: " ++ errMsg
    show (ParseError errMsg) = "DOTERROR when parsing: " ++ errMsg
-
-export
-Show a => Show (ParsingError a) where
-  show (Error s Nothing) = "PARSING ERROR: " ++ s
-  show (Error s (Just (MkBounds startLine startCol endLine endCol))) =
-    "PARSING ERROR: "
-    ++ s
-    ++ " @ L\{show startLine}:\{show startCol}-L\{show endLine}:\{show endCol}"
 
 
 ||| Given a file name, open it and lex and parse the DOT in it, returning the
