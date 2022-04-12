@@ -14,57 +14,57 @@ import Data.String
 --------------------------------------------------------------------------------
 
 ||| The type `t` can be converted to a `CompassPoint`.
-export
+public export
 interface DOTCompassPoint t where
   toCompassPoint : t -> CompassPoint
 
 ||| The type `t` can be converted to a `Keyword`.
-export
+public export
 interface DOTKeyword t where
   toKeyword : t -> Keyword
 
 ||| The type `t` can be converted to a `DOTID`.
-export
+public export
 interface DOTDOTID t where
   toDOTID : t -> DOTID
 
 ||| The type `t` can be converted to a `Port`.
-export
+public export
 interface DOTPort t where
   toPort : t -> Port
 
 ||| The type `t` can be converted to a `NodeID`.
-export
+public export
 interface DOTNodeID t where
   toNodeID : t -> NodeID
 
 ||| The type `t` can be converted to an `Assign`.
-export
+public export
 interface DOTAssign t where
   toAssign : t -> Assign
 
 ||| The type `t` can be converted to an `EdgeOp`.
-export
+public export
 interface DOTEdgeOp t where
   toEdgeOp : t -> EdgeOp
 
 ||| The type `t` can be converted to an `EdgeRHS`.
-export
+public export
 interface DOTEdgeRHS t where
   toEdgeRHS : t -> EdgeRHS
 
 ||| The type `t` can be converted to a `Subgraph`.
-export
+public export
 interface DOTSubgraph t where
   toSubgraph : t -> Subgraph
 
 ||| The type `t` can be converted to a `Stmt`.
-export
+public export
 interface DOTStmt t where
   toStmt : t -> Stmt
 
 ||| The type `t` can be converted to a `Graph`.
-export
+public export
 interface DOTGraph t where
   toGraph : t -> Graph
 

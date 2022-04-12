@@ -1,5 +1,5 @@
 [ { "name": "dot-parse"
-  , "version": "0.2.1"
+  , "version": "0.2.2"
   , "license": "BSD-3-Clause"
   , "authors": "Thomas E. Hansen (CodingCellist)"
   , "modules": [ "Graphics.DOT.Lexer"
