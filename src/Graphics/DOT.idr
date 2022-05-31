@@ -6,6 +6,7 @@ import Data.List1
 import Graphics.DOT.Lexer
 
 import public Graphics.DOT.AST
+import public Graphics.DOT.Utils
 import public Graphics.DOT.Parser
 import public Graphics.DOT.Interfaces
 

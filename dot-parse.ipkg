@@ -1,5 +1,5 @@
 package dot-parse
-version = 0.2.2
+version = 0.2.3
 authors = "Thomas E. Hansen (CodingCellist)"
 -- maintainers =
 license = "BSD-3-Clause"
@@ -15,6 +15,8 @@ depends = contrib
 -- modules to install
 modules = Graphics.DOT.Lexer
         , Graphics.DOT.AST
+        , Graphics.DOT.Utils.Filters
+        , Graphics.DOT.Utils
         , Graphics.DOT.Interfaces
         , Graphics.DOT.Parser
         , Graphics.DOT
