@@ -3,11 +3,11 @@ version = 0.2.3
 authors = "Thomas E. Hansen (CodingCellist)"
 -- maintainers =
 license = "BSD-3-Clause"
--- brief =
+brief = "Idris2 lexer and parser for the DOT language used in GraphViz files."
 -- readme =
 homepage = "https://github.com/CodingCellist/idris2-dot-parse"
 sourceloc = "https://github.com/CodingCellist/idris2-dot-parse"
-bugtracker = "https://github.com/CodingCellist/idris2-dot-parse"
+bugtracker = "https://github.com/CodingCellist/idris2-dot-parse/issues"
 
 -- packages to add to search path
 depends = contrib
