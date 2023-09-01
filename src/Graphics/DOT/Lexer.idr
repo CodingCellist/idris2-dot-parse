@@ -1,6 +1,6 @@
 module Graphics.DOT.Lexer
 
-import Text.Lexer
+import Libraries.Text.Lexer
 import Data.String
 import Data.List
 
@@ -76,7 +76,8 @@ Show DOTToken where
   show Colon = "Colon"
   show Equal = "EQ"
 
--- Keywords --
+------------------------------------------------------------------------
+-- Keywords
 
 -- DOT keywords are case-insensitive
 
@@ -109,7 +110,8 @@ keyword =  nodeKW
        <|> strictKW
 
 
--- Identifiers --
+------------------------------------------------------------------------
+-- Identifiers
 
 underscore : Lexer
 underscore = is '_'
@@ -165,7 +167,8 @@ htmlID : Lexer
 htmlID = ?todo_htmlIDs_are_not_implemented_atm
 
 
--- Edge operations --
+------------------------------------------------------------------------
+-- Edge operations
 
 digraphEdgeOp : Lexer
 digraphEdgeOp = exact "->"
@@ -174,7 +177,8 @@ graphEdgeOp : Lexer
 graphEdgeOp = exact "--"
 
 
--- Compass Points --
+------------------------------------------------------------------------
+-- Compass Points
 
 northCPt : Lexer
 northCPt =        is 'n'
@@ -224,7 +228,8 @@ compassPt = northCPt
          <|> underCPt
 
 
--- Comments --
+------------------------------------------------------------------------
+-- Comments
 
 -- "a line beginning with a '#' character is considered a line output from a C
 -- preprocessor and discarded"
@@ -246,7 +251,8 @@ comment =  cppLineComment
        <|> cPreProcessorOutput
 
 
--- Misc --
+------------------------------------------------------------------------
+-- Misc
 
 -- DOT allows double-quoted strings to span multiple physical lines using the
 -- standard C convention of a backslash immediately preceding a newline
@@ -287,9 +293,8 @@ equal : Lexer
 equal = is '='
 
 
----------------
--- TOKEN MAP --
----------------
+------------------------------------------------------------------------
+-- TOKEN MAP
 
 ||| A mapping from the @Lexer@s to a function of type String -> @DOTToken@
 dotTokenMap : TokenMap DOTToken

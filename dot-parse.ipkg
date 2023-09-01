@@ -1,5 +1,5 @@
 package dot-parse
-version = 0.2.3
+version = 0.3.0
 authors = "Thomas E. Hansen (CodingCellist)"
 -- maintainers =
 license = "BSD-3-Clause"
@@ -10,7 +10,7 @@ sourceloc = "https://github.com/CodingCellist/idris2-dot-parse"
 bugtracker = "https://github.com/CodingCellist/idris2-dot-parse/issues"
 
 -- packages to add to search path
-depends = contrib
+depends = idris2
 
 -- modules to install
 modules = Graphics.DOT.Lexer

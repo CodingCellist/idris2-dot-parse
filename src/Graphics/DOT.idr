@@ -12,12 +12,11 @@ import public Graphics.DOT.Interfaces
 
 -- TODO: REMOVE ONCE READY
 import System.File
-import Text.Lexer.Core
-import Text.Parser.Core
+import Libraries.Text.Lexer.Core
+import Libraries.Text.Parser.Core
 
-----------
--- UTIL --
-----------
+------------------------------------------------------------------------
+-- UTIL
 
 ||| The types of errors that can occur when processing a DOT/.gv file, combined
 ||| with the respective error message.
@@ -44,16 +43,15 @@ readDOTFile fname =
   do (Right contents) <- readFile fname
         | Left err => pure $ (Left . FError) $ show err
      let (tokData, _) = lex contents
-     Right (ast, rem) <- pure $ parse tokData
+     Right (warns, ast, rem) <- pure $ parse tokData
         | Left pErrs => pure $ (Left . ParseError) $ show (map show pErrs)
      if (not . isNil) rem
         then pure $ (Left . ParseError) $ "Non-empty token remainder:\n\t\{show rem}"
         else pure $ Right ast
 
 
------------
--- TESTS --
------------
+------------------------------------------------------------------------
+-- TESTS
 
 lexTest : String -> IO ()
 lexTest fp =
@@ -75,9 +73,9 @@ parseTest fp =
         the String $
             case pRes of
                  Left errs => show $ map show errs
-                 Right (ast, rem) =>
-                     show ast ++ "\n\tREM: " ++ show rem
-     Right (ast, rem) <- pure $ parse tokData
+                 Right (pWarns, ast, pRem) =>
+                     show ast ++ "\n\tREM: " ++ show pRem
+     Right (warns, ast, rem) <- pure $ parse tokData
         | Left errs => do putStrLn (show $ map show errs)
      putStrLn $ "Remainder: " ++ show rem
 

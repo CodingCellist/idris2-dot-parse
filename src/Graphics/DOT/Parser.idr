@@ -1,6 +1,6 @@
 module Graphics.DOT.Parser
 
-import Text.Parser
+import Libraries.Text.Parser
 
 import Data.Vect
 import Data.List1
@@ -11,6 +11,18 @@ import Graphics.DOT.AST
 
 %default total
 
+
+------------------------------------------------------------------------
+-- Interfaces
+
+export
+Show (ParsingError DOTToken) where
+  show (Error errStr Nothing) = errStr
+  show (Error errStr (Just (MkBounds startLine startCol endLine endCol)))
+    = "\{errStr}@L\{show startLine}:\{show startCol}-L\{show endLine}:\{show endCol}"
+
+
+------------------------------------------------------------------------
 -- Terminals --
 
 lBrace : Grammar _ DOTToken True ()
@@ -334,6 +346,7 @@ mutual
 
 export
 parse :  (xs : List (WithBounds DOTToken))
-      -> Either (List1 (ParsingError DOTToken)) (Graph, List (WithBounds DOTToken))
+      -> Either (List1 (ParsingError DOTToken))
+                (ParsingWarnings, Graph, List (WithBounds DOTToken))
 parse xs = parse graph xs
 
